@@ -45,6 +45,8 @@ namespace RegMaster.Tests
  
 	    #endregion
 
+        #region Service Tests
+
         [TestMethod]
         public void CatalogRepository_Repository_Is_Not_Null()
         {
@@ -72,5 +74,7 @@ namespace RegMaster.Tests
             IList<Category> cat = catalogService.GetCategories();
             Assert.AreEqual(5, cat[0].SubCategories.Count());
         }
+ 
+	    #endregion
     }
 }
