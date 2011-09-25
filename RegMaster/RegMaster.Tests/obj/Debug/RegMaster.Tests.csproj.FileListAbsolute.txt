@@ -1,9 +1,0 @@
-C:\Labs\MVC\RegMaster\RegMaster.Tests\bin\Debug\RegMaster.Tests.dll
-C:\Labs\MVC\RegMaster\RegMaster.Tests\bin\Debug\RegMaster.Tests.pdb
-C:\Labs\MVC\RegMaster\RegMaster.Tests\obj\Debug\ResolveAssemblyReference.cache
-C:\Labs\MVC\RegMaster\RegMaster.Tests\obj\Debug\RegMaster.Tests.dll
-C:\Labs\MVC\RegMaster\RegMaster.Tests\obj\Debug\RegMaster.Tests.pdb
-C:\Labs\MVC\RegMaster\RegMaster.Tests\bin\Debug\RegMaster.Data.dll
-C:\Labs\MVC\RegMaster\RegMaster.Tests\bin\Debug\RegMaster.Data.pdb
-C:\Labs\MVC\RegMaster\RegMaster.Tests\bin\Debug\RegMaster.Services.dll
-C:\Labs\MVC\RegMaster\RegMaster.Tests\bin\Debug\RegMaster.Services.pdb
