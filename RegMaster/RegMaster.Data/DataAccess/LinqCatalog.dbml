@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="RegMaster" EntityNamespace="RegMaster.SqlRepository.Data" ContextNamespace="RegMaster.SqlRepository" Class="DB" AccessModifier="Internal" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=TOWER\SQLEXPRESS;Initial Catalog=RegMaster;Integrated Security=True;Pooling=False" SettingsObjectName="RegMaster.Data.Properties.Settings" SettingsPropertyName="RegMasterConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Products" Member="Products">
+    <Type Name="Product">
+      <Column Name="ProductID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CategoryID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ProductName" Type="System.String" DbType="NVarChar(80) NOT NULL" CanBeNull="false" />
+      <Column Name="UnitPrice" Type="System.Decimal" DbType="Money NOT NULL" CanBeNull="false" />
+      <Column Name="DiscountPercent" Type="System.Decimal" DbType="Decimal(18,0) NOT NULL" CanBeNull="false" />
+      <Association Name="Product_ProductReview" Member="ProductReviews" ThisKey="ProductID" OtherKey="ProductID" Type="ProductReview" />
+      <Association Name="Product_ProductDescription" Member="ProductDescriptions" ThisKey="ProductID" OtherKey="ProductID" Type="ProductDescription" />
+      <Association Name="Category_Product" Member="Category" ThisKey="CategoryID" OtherKey="CategoryID" Type="Category" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductReviews" Member="ProductReviews">
+    <Type Name="ProductReview">
+      <Column Name="ProductReviewID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProductID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Author" Type="System.String" DbType="NVarChar(70)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Body" Type="System.String" DbType="NVarChar(1024)" CanBeNull="true" />
+      <Association Name="Product_ProductReview" Member="Product" ThisKey="ProductID" OtherKey="ProductID" Type="Product" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ProductDescriptions" Member="ProductDescriptions">
+    <Type Name="ProductDescription">
+      <Column Name="ProductDescriptionID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProductID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CultureID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="Product_ProductDescription" Member="Product" ThisKey="ProductID" OtherKey="ProductID" Type="Product" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Categories" Member="Categories">
+    <Type Name="Category">
+      <Column Name="CategoryID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CategoryName" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="ParentID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Category_Product" Member="Products" ThisKey="CategoryID" OtherKey="CategoryID" Type="Product" />
+    </Type>
+  </Table>
+</Database>

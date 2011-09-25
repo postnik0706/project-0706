@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegMaster.Web", "RegMaster.Web\RegMaster.Web.csproj", "{98FE8228-A260-40C6-A843-14428395533A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProjects", "TestProjects", "{941FA3F6-823A-418D-98EA-3D3B643F2F61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegMaster.IntegrationTests", "IntegrationTests\RegMaster.IntegrationTests.csproj", "{C8AA41FC-A7D9-4235-841B-2AFCA824B24C}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -45,8 +49,16 @@ Global
 		{98FE8228-A260-40C6-A843-14428395533A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98FE8228-A260-40C6-A843-14428395533A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98FE8228-A260-40C6-A843-14428395533A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8AA41FC-A7D9-4235-841B-2AFCA824B24C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8AA41FC-A7D9-4235-841B-2AFCA824B24C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8AA41FC-A7D9-4235-841B-2AFCA824B24C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8AA41FC-A7D9-4235-841B-2AFCA824B24C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C2FB4C27-A791-43E6-AFB4-7A56F0AE60C3} = {941FA3F6-823A-418D-98EA-3D3B643F2F61}
+		{C8AA41FC-A7D9-4235-841B-2AFCA824B24C} = {941FA3F6-823A-418D-98EA-3D3B643F2F61}
 	EndGlobalSection
 EndGlobal

@@ -14,7 +14,7 @@ namespace RegMaster.Data
             this.Description = Description;
             this.CategoryID = CategoryID;
             this.DiscountPercent = DiscountPercent;
-            this.ListPrice = ListPrice;
+            this.Price = ListPrice;
         }
 
         public Product()
@@ -39,8 +39,8 @@ namespace RegMaster.Data
             get
             {
                 decimal result = 0;
-                if (ListPrice > 0 && DiscountPercent > 0)
-                    result =  ListPrice * DiscountPercent / 100;
+                if (Price > 0 && DiscountPercent > 0)
+                    result =  Price * DiscountPercent / 100;
                 return result;
             }
         }
@@ -57,7 +57,7 @@ namespace RegMaster.Data
         {
             get
             {
-                return ListPrice - DiscountAmount;
+                return Price - DiscountAmount;
             }
         }
 
@@ -66,12 +66,7 @@ namespace RegMaster.Data
             get; set;
         }
 
-        public string LargePhotoFilename
-        {
-            get; set;
-        }
-
-        public decimal ListPrice
+        public decimal Price
         {
             get; set;
         }
@@ -81,14 +76,26 @@ namespace RegMaster.Data
             get; set;
         }
 
-        public string SummaryDescription
+        public int LocalizedDescriptions
         {
-            get; set;
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
         }
 
-        public string ThumbnaleFileName
+        public List<ProductReview> Reviews
         {
-            get; set;
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
         }
     }
 }
