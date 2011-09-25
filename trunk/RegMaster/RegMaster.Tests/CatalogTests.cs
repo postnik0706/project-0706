@@ -22,6 +22,18 @@ namespace RegMaster.Tests
         }
         
         #region Product Tests
+
+        [TestMethod]
+        public void Product_Should_Have_Name_Description_Category_Price_Discount_Fields()
+        {
+            Product p = new Product("TestName", "TestDescription", 10, 100, 20);
+
+            Assert.AreEqual("TestName", p.Name);
+            Assert.AreEqual("TestDescription", p.Description);
+            Assert.AreEqual(10, p.CategoryID);
+            Assert.AreEqual(100, p.DiscountPercent);
+            Assert.AreEqual(20, p.ListPrice);
+        }
 		
         [TestMethod]
         public void Product_Discount_Amount_IsValid()
