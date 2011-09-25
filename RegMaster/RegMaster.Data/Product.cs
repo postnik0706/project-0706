@@ -7,6 +7,20 @@ namespace RegMaster.Data
 {
     public class Product
     {
+        public Product(string Name, string Description, int CategoryID, Decimal DiscountPercent, int ListPrice)
+        {
+            // TODO: Complete member initialization
+            this.Name = Name;
+            this.Description = Description;
+            this.CategoryID = CategoryID;
+            this.DiscountPercent = DiscountPercent;
+            this.ListPrice = ListPrice;
+        }
+
+        public Product()
+        {
+            // TODO: Complete member initialization
+        }
         public int CategoryID
         {
             get; set;
