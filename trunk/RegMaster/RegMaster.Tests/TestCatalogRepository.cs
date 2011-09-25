@@ -51,7 +51,7 @@ namespace RegMaster.Tests
                     Product p = new Product();
                     p.Name = String.Format("Product {0}", i);
                     p.ID = uniqueProductID;
-                    p.ListPrice = 5.68M;
+                    p.Price = 5.68M;
                     p.Description = "Test Description";
 
                     p.CategoryID = c.ID;

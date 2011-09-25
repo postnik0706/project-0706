@@ -32,14 +32,14 @@ namespace RegMaster.Tests
             Assert.AreEqual("TestDescription", p.Description);
             Assert.AreEqual(10, p.CategoryID);
             Assert.AreEqual(100, p.DiscountPercent);
-            Assert.AreEqual(20, p.ListPrice);
+            Assert.AreEqual(20, p.Price);
         }
 		
         [TestMethod]
         public void Product_Discount_Amount_IsValid()
         {
             Product p = new Product();
-            p.ListPrice = 100;
+            p.Price = 100;
             p.DiscountPercent = 40;
 
             Assert.AreEqual(40, p.DiscountAmount);
@@ -49,7 +49,7 @@ namespace RegMaster.Tests
         public void Product_Discount_Price_Is_Valid()
         {
             Product p = new Product();
-            p.ListPrice = 100;
+            p.Price = 100;
             p.DiscountPercent = 40;
 
             Assert.AreEqual(60, p.DiscountPrice);

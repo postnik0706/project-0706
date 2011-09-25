@@ -5,20 +5,9 @@ using System.Text;
 
 namespace RegMaster.Data
 {
-    public class ProductReview
+    public class ProductDescription
     {
-        public string Author
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
-
-        public string AutorName
+        public string Body
         {
             get
             {
@@ -40,40 +29,18 @@ namespace RegMaster.Data
             }
         }
 
+        public string Locale
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
+
         public int ProductID
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
-
-        public string Body
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
-
-        public DateTime CreatedOn
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
-
-        public string Email
         {
             get
             {
