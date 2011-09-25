@@ -1,5 +1,0 @@
-C:\Labs\MVC\RegMaster\RegMaster.Data\bin\Debug\RegMaster.Data.dll
-C:\Labs\MVC\RegMaster\RegMaster.Data\bin\Debug\RegMaster.Data.pdb
-C:\Labs\MVC\RegMaster\RegMaster.Data\obj\Debug\ResolveAssemblyReference.cache
-C:\Labs\MVC\RegMaster\RegMaster.Data\obj\Debug\RegMaster.Data.dll
-C:\Labs\MVC\RegMaster\RegMaster.Data\obj\Debug\RegMaster.Data.pdb
