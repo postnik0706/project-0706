@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="fa8f17d9-ada6-4d4f-bfce-8ca8d005bcf3" name="Alex@ALEX-PC 2011-09-24 21:53:06" runUser="Alex-PC\Alex" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="1fdfb5ef-346c-4332-abe8-550a27ec68da">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="Alex_ALEX-PC 2011-09-24 21_53_06">
+      <DeploymentItem filename="C:\Labs\MVC\RegMaster\RegMaster.Services\bin\Debug\RegMaster.Services.dll" />
+      <DeploymentItem filename="C:\Labs\MVC\RegMaster\RegMaster.Data\bin\Debug\RegMaster.Data.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2011-09-24T21:53:06.1069197-07:00" queuing="2011-09-24T21:53:06.2209262-07:00" start="2011-09-24T21:53:06.2899302-07:00" finish="2011-09-24T21:53:06.8039596-07:00" />
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="CatalogRepository_Repository_Is_Not_Null" storage="c:\labs\mvc\regmaster\regmaster.tests\bin\debug\regmaster.tests.dll" id="3e0b0710-a9c8-35e7-9650-856398ddf9c7">
+      <Execution id="5925d229-faab-4b85-abe4-f360da161dcb" />
+      <TestMethod codeBase="C:/Labs/MVC/RegMaster/RegMaster.Tests/bin/Debug/RegMaster.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="RegMaster.Tests.CatalogTests, RegMaster.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="CatalogRepository_Repository_Is_Not_Null" />
+    </UnitTest>
+    <UnitTest name="Product_Discount_Price_Is_Valid" storage="c:\labs\mvc\regmaster\regmaster.tests\bin\debug\regmaster.tests.dll" id="59e6dfca-3962-0ca6-8e38-13896fa7c89f">
+      <Execution id="e4fbc88e-8cf7-4108-8e2b-24b1a389b301" />
+      <TestMethod codeBase="C:/Labs/MVC/RegMaster/RegMaster.Tests/bin/Debug/RegMaster.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="RegMaster.Tests.CatalogTests, RegMaster.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Product_Discount_Price_Is_Valid" />
+    </UnitTest>
+    <UnitTest name="Product_Discount_Amount_IsValid" storage="c:\labs\mvc\regmaster\regmaster.tests\bin\debug\regmaster.tests.dll" id="0d532201-f912-9407-3f8e-524967e4a4ac">
+      <Execution id="b49b0d31-b3c6-44b3-83de-9064c8b14d9d" />
+      <TestMethod codeBase="C:/Labs/MVC/RegMaster/RegMaster.Tests/bin/Debug/RegMaster.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="RegMaster.Tests.CatalogTests, RegMaster.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="Product_Discount_Amount_IsValid" />
+    </UnitTest>
+    <UnitTest name="CatalogService_Can_Get_Categories_From_Repository" storage="c:\labs\mvc\regmaster\regmaster.tests\bin\debug\regmaster.tests.dll" id="4045b84d-3b46-3f2a-9ef0-b22dbd3f1875">
+      <Execution id="f6a429fa-192d-401e-996d-f12fb7c4cc79" />
+      <TestMethod codeBase="C:/Labs/MVC/RegMaster/RegMaster.Tests/bin/Debug/RegMaster.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="RegMaster.Tests.CatalogTests, RegMaster.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="CatalogService_Can_Get_Categories_From_Repository" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="0d532201-f912-9407-3f8e-524967e4a4ac" executionId="b49b0d31-b3c6-44b3-83de-9064c8b14d9d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="59e6dfca-3962-0ca6-8e38-13896fa7c89f" executionId="e4fbc88e-8cf7-4108-8e2b-24b1a389b301" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3e0b0710-a9c8-35e7-9650-856398ddf9c7" executionId="5925d229-faab-4b85-abe4-f360da161dcb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4045b84d-3b46-3f2a-9ef0-b22dbd3f1875" executionId="f6a429fa-192d-401e-996d-f12fb7c4cc79" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="b49b0d31-b3c6-44b3-83de-9064c8b14d9d" testId="0d532201-f912-9407-3f8e-524967e4a4ac" testName="Product_Discount_Amount_IsValid" computerName="ALEX-PC" duration="00:00:00.0326403" startTime="2011-09-24T21:53:06.2889301-07:00" endTime="2011-09-24T21:53:06.7139544-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b49b0d31-b3c6-44b3-83de-9064c8b14d9d">
+    </UnitTestResult>
+    <UnitTestResult executionId="e4fbc88e-8cf7-4108-8e2b-24b1a389b301" testId="59e6dfca-3962-0ca6-8e38-13896fa7c89f" testName="Product_Discount_Price_Is_Valid" computerName="ALEX-PC" duration="00:00:00.0009850" startTime="2011-09-24T21:53:06.7219549-07:00" endTime="2011-09-24T21:53:06.7299553-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e4fbc88e-8cf7-4108-8e2b-24b1a389b301">
+    </UnitTestResult>
+    <UnitTestResult executionId="5925d229-faab-4b85-abe4-f360da161dcb" testId="3e0b0710-a9c8-35e7-9650-856398ddf9c7" testName="CatalogRepository_Repository_Is_Not_Null" computerName="ALEX-PC" duration="00:00:00.0026938" startTime="2011-09-24T21:53:06.7369557-07:00" endTime="2011-09-24T21:53:06.7469563-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5925d229-faab-4b85-abe4-f360da161dcb">
+    </UnitTestResult>
+    <UnitTestResult executionId="f6a429fa-192d-401e-996d-f12fb7c4cc79" testId="4045b84d-3b46-3f2a-9ef0-b22dbd3f1875" testName="CatalogService_Can_Get_Categories_From_Repository" computerName="ALEX-PC" duration="00:00:00.0056834" startTime="2011-09-24T21:53:06.7529566-07:00" endTime="2011-09-24T21:53:06.7709577-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6a429fa-192d-401e-996d-f12fb7c4cc79">
+    </UnitTestResult>
+  </Results>
+</TestRun>

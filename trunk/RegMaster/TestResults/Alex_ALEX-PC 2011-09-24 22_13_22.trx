@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="deec9ffe-6132-49fd-881c-4896a3df07b2" name="Alex@ALEX-PC 2011-09-24 22:13:22" runUser="Alex-PC\Alex" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="1fdfb5ef-346c-4332-abe8-550a27ec68da">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="Alex_ALEX-PC 2011-09-24 22_13_22">
+      <DeploymentItem filename="C:\Labs\MVC\RegMaster\RegMaster.Services\bin\Debug\RegMaster.Services.dll" />
+      <DeploymentItem filename="C:\Labs\MVC\RegMaster\RegMaster.Data\bin\Debug\RegMaster.Data.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2011-09-24T22:13:22.8105112-07:00" queuing="2011-09-24T22:13:37.4153465-07:00" start="2011-09-24T22:13:37.5053517-07:00" finish="2011-09-24T22:13:38.0723841-07:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="CatalogService_Can_Group_SubCategories" storage="c:\labs\mvc\regmaster\regmaster.tests\bin\debug\regmaster.tests.dll" id="66f323ef-cc6d-ba1f-3117-e0dbc1f24872">
+      <Execution id="7f422d87-4632-4dc6-a700-2e827527ee46" />
+      <TestMethod codeBase="C:/Labs/MVC/RegMaster/RegMaster.Tests/bin/Debug/RegMaster.Tests.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="RegMaster.Tests.CatalogTests, RegMaster.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="CatalogService_Can_Group_SubCategories" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="66f323ef-cc6d-ba1f-3117-e0dbc1f24872" executionId="7f422d87-4632-4dc6-a700-2e827527ee46" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="7f422d87-4632-4dc6-a700-2e827527ee46" testId="66f323ef-cc6d-ba1f-3117-e0dbc1f24872" testName="CatalogService_Can_Group_SubCategories" computerName="ALEX-PC" duration="00:00:00.0954724" startTime="2011-09-24T22:13:37.5343533-07:00" endTime="2011-09-24T22:13:38.0403823-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f422d87-4632-4dc6-a700-2e827527ee46">
+      <Output>
+        <ErrorInfo>
+          <Message>Test method RegMaster.Tests.CatalogTests.CatalogService_Can_Group_SubCategories threw exception: 
+System.NotImplementedException: The method or operation is not implemented.</Message>
+          <StackTrace>    at RegMaster.Data.Category.get_SubCategories() in C:\Labs\MVC\RegMaster\RegMaster.Data\Category.cs:line 29
+   at RegMaster.Tests.CatalogTests.CatalogService_Can_Group_SubCategories() in C:\Labs\MVC\RegMaster\RegMaster.Tests\Catalogtests.cs:line 73
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>
