@@ -54,10 +54,74 @@ namespace RegMaster.Tests
 
             Assert.AreEqual(60, p.DiscountPrice);
         }
- 
-	    #endregion
 
-        #region Service Tests
+        #endregion
+
+        #region CatalogRepository
+        [TestMethod]
+        public void CatalogRepository_Contains_Products()
+        {
+            ICatalogRepository r = new TestCatalogRepository();
+            Assert.IsNotNull(r.GetProducts());
+        }
+
+        [TestMethod]
+        public void CatalogRepository_Each_Category_Contains_5_Products()
+        {
+            ICatalogRepository rep = new TestCatalogRepository();
+
+            var cat = rep.GetCategories()
+                .Where(x => x.ParentID.HasValue)
+                .ToList();
+            Assert.AreEqual(10, cat.Count());
+
+            var prod = rep.GetProducts();
+            foreach (Category c in cat)
+            {
+                int prodCount = (from p in prod
+                                 where p.CategoryID == c.ID
+                                 select p).Count();
+                Assert.AreEqual(5, prodCount, String.Format("For category {0}", c.ID));
+            }
+
+            Assert.IsNotNull(rep.GetProducts());
+        }
+
+        [TestMethod]
+        public void CatalogRepository_Has_Category_Filter_ForProducts()
+        {
+            ICatalogRepository rep = new TestCatalogRepository();
+
+            IList<Product> prod = rep.GetProducts()
+                .WithCategory(11)
+                .ToList();
+            Assert.IsNotNull(prod);
+        }
+
+        [TestMethod]
+        public void CatalogRepository_ProductFilter_Returns_5_Products_With_Category_11()
+        {
+            ICatalogRepository rep = new TestCatalogRepository();
+
+            Assert.AreEqual(5, rep.GetProducts()
+                .WithCategory(11)
+                .Count());
+        }
+
+        [TestMethod]
+        public void CatalogRepository_Returns_Single_Product_When_Filtered_By_ID_1()
+        {
+            ICatalogRepository rep = new TestCatalogRepository();
+
+            Assert.AreEqual(1,
+                rep.GetProducts()
+                    .WithID(1)
+                    .ToList().Count());
+        }
+
+        #endregion
+
+        #region CatalogService Tests
 
         [TestMethod]
         public void CatalogRepository_Repository_Is_Not_Null()
@@ -86,7 +150,21 @@ namespace RegMaster.Tests
             IList<Category> cat = catalogService.GetCategories();
             Assert.AreEqual(5, cat[0].SubCategories.Count());
         }
+
+        [TestMethod]
+        public void CatalogService_Returns_5_Products_With_Category_11()
+        {
+            IList<Product> products = catalogService.GetProductsByCategory(11);
+            Assert.AreEqual(5, products.Count);
+        }
  
+        [TestMethod]
+        public void CatalogService_Returns_Single_Product_With_ProductID_1()
+        {
+            Product p = catalogService.GetProductByID(1);
+            Assert.IsNotNull(p);
+        }
+
 	    #endregion
     }
 }

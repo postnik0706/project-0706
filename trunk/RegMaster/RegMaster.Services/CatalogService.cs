@@ -44,5 +44,23 @@ namespace RegMaster.Services
             
             return parents;
         }
+
+        /// <summary>
+        /// Returns a list of products for a given category
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public IList<Product> GetProductsByCategory(int CategoryID)
+        {
+            return _repository.GetProducts()
+                .WithCategory(CategoryID)
+                .ToList();
+        }
+
+        public Product GetProductByID(int ProductID)
+        {
+            return _repository.GetProducts()
+                .WithID(ProductID).Single();
+        }
     }
 }
