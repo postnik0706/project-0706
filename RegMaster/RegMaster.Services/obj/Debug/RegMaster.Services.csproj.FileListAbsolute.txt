@@ -1,0 +1,7 @@
+C:\Labs\MVC\RegMaster\RegMaster.Services\bin\Debug\RegMaster.Services.dll
+C:\Labs\MVC\RegMaster\RegMaster.Services\bin\Debug\RegMaster.Services.pdb
+C:\Labs\MVC\RegMaster\RegMaster.Services\obj\Debug\ResolveAssemblyReference.cache
+C:\Labs\MVC\RegMaster\RegMaster.Services\obj\Debug\RegMaster.Services.dll
+C:\Labs\MVC\RegMaster\RegMaster.Services\obj\Debug\RegMaster.Services.pdb
+C:\Labs\MVC\RegMaster\RegMaster.Services\bin\Debug\RegMaster.Data.dll
+C:\Labs\MVC\RegMaster\RegMaster.Services\bin\Debug\RegMaster.Data.pdb

@@ -1,0 +1,7 @@
+C:\Labs\MVC\RegMaster\RegMaster.Web\bin\RegMaster.Web.dll
+C:\Labs\MVC\RegMaster\RegMaster.Web\bin\RegMaster.Web.pdb
+C:\Labs\MVC\RegMaster\RegMaster.Web\bin\EntityFramework.dll
+C:\Labs\MVC\RegMaster\RegMaster.Web\bin\EntityFramework.xml
+C:\Labs\MVC\RegMaster\RegMaster.Web\obj\Debug\ResolveAssemblyReference.cache
+C:\Labs\MVC\RegMaster\RegMaster.Web\obj\Debug\RegMaster.Web.dll
+C:\Labs\MVC\RegMaster\RegMaster.Web\obj\Debug\RegMaster.Web.pdb
