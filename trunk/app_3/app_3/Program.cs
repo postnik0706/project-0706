@@ -42,7 +42,8 @@ namespace app_3
               new Contact() { FirstName = "Chance", LastName = "Lard", Phone = "278 918 2789", DateOfBirth = DateTime.Parse("10/21/1951"), State = "WA" },
               new Contact() { FirstName = "Blaine", LastName = "Reifsteck", Phone = "715 920 7157", DateOfBirth = DateTime.Parse("5/18/1946"), State = "TX" },
               new Contact() { FirstName = "Mack", LastName = "Kamph", Phone = "364 202 3644", DateOfBirth = DateTime.Parse("9/17/1977"), State = "TX" },
-              new Contact() { FirstName = "Ariel", LastName = "Hazelgrove", Phone = "165 737 1656", DateOfBirth = DateTime.Parse("5/23/1922"), State = "OR" }
+              new Contact() { FirstName = "Ariel", LastName = "Hazelgrove", Phone = "165 737 1656", DateOfBirth = DateTime.Parse("5/23/1922"), State = "OR" },
+              new Contact() { FirstName = "Alex", LastName = "Postnikov", Phone = "165 123 4545", DateOfBirth = DateTime.Parse("1/05/1971"), State = "OR" }
             };
         }
     }
@@ -193,6 +194,39 @@ namespace app_3
 
             MyEvent += new Test(Program_MyEvent);
             MyEvent.Invoke(null, 1234);
+
+
+            Console.WriteLine("----------------------------------------------------------");
+            List<Contact> cont = Contact.SampleData();
+
+            {
+                var q = from c in cont
+                        where c.DateOfBirth.AddYears(35) < DateTime.Now
+                        orderby c.DateOfBirth descending
+                        select c;
+
+                foreach (var item in q)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
+            Console.WriteLine("----------------------------------------------------------");
+
+            {
+                var q = from c in cont
+                        group c by c.State;
+
+                foreach (var item in q)
+                {
+                    Console.WriteLine("**** {0}", item.Key);
+                    foreach (var i in item)
+                    {
+                        Console.WriteLine(i);
+                    }
+                }
+            }
+            Console.WriteLine("----------------------------------------------------------");
         }
 
         static void Program_MyEvent(object Sender, int i)
@@ -224,20 +258,6 @@ namespace app_3
             {
                 Console.WriteLine(item.Name);
             };
-
-            Console.WriteLine("----------------------------------------------------------");
-            List<Contact> cont = Contact.SampleData();
-
-            var q = from c in cont
-                    where c.DateOfBirth.AddYears(35) > DateTime.Now
-                    select c;
-
-            foreach (var item in q)
-            {
-                Console.WriteLine(item);
-            }
-
-            Console.WriteLine("----------------------------------------------------------");
         }
     }
 }
