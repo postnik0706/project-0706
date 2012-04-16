@@ -1,5 +1,0 @@
-C:\Labs\WCF\app_2\app_2\bin\Debug\app_2.dll
-C:\Labs\WCF\app_2\app_2\bin\Debug\app_2.pdb
-C:\Labs\WCF\app_2\app_2\obj\Debug\app_2.csprojResolveAssemblyReference.cache
-C:\Labs\WCF\app_2\app_2\obj\Debug\app_2.dll
-C:\Labs\WCF\app_2\app_2\obj\Debug\app_2.pdb
