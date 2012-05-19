@@ -1,0 +1,8 @@
+Delphi 2010 to WCF:
+
+- Check that WCF uses basicHttpBinding.
+- After the import comment the ioSOAP12 setting out.
+- Set Document/Literal SOAP instead of RPC/Encoded:
+  InvRegistry.RegisterInvokeOptions(TypeInfo(ISecurityConsole), ioLiteral);
+  InvRegistry.RegisterInvokeOptions(TypeInfo(ISecurityConsole), ioDocument);
+  (source: http://stackoverflow.com/questions/2473051/delphi-soap-envelope-and-wcf)
