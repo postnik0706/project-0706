@@ -6,3 +6,7 @@ Delphi 2010 to WCF:
   InvRegistry.RegisterInvokeOptions(TypeInfo(ISecurityConsole), ioLiteral);
   InvRegistry.RegisterInvokeOptions(TypeInfo(ISecurityConsole), ioDocument);
   (source: http://stackoverflow.com/questions/2473051/delphi-soap-envelope-and-wcf)
+
+
+VS sharing parts of the source code:
+http://weblogs.asp.net/savanness/archive/2003/07/22/10417.aspx
