@@ -13,3 +13,6 @@ http://weblogs.asp.net/savanness/archive/2003/07/22/10417.aspx
 
 Overbyte ICS site:
 http://www.overbyte.be/frame_index.html
+
+Delphi patch of SOAPHTTPTrans.pas:
+https://forums.embarcadero.com/thread.jspa?messageID=450159
