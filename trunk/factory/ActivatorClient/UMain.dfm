@@ -49,6 +49,10 @@ object Form1: TForm1
     BandwidthLimit = 0
     BandwidthSampling = 1000
     OnClientConnect = servClientConnect
+    OnClientDisconnect = servClientDisconnect
+    OnPostDocument = servPostDocument
+    OnPostedData = servPostedData
+    OnBeforeProcessRequest = servBeforeProcessRequest
     AuthTypes = []
     AuthRealm = 'ics'
     Left = 32
