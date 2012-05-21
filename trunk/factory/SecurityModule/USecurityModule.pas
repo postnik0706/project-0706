@@ -133,7 +133,7 @@ class procedure TConfiguration.Load;
 var
   i: Integer;
 const
-  INI_FILENAME = 'SecurityModule.settings';
+  INI_FILENAME = 'ConsoleLink.settings';
 begin
   if not Assigned(gConfiguration) then
   begin
@@ -342,7 +342,8 @@ begin
     end;
 
     try
-      GetISecurityConsole().ReportStatus(par, par1);
+      GetISecurityConsole(False,
+        .ReportStatus(par, par1);
     except
       on E: Exception do
       begin
@@ -354,7 +355,7 @@ begin
     for i := 0 to FSensorMatrix.Sensors.Count - 1 do
       if Assigned(arr[i]) then
         FreeAndNil(arr[i]);
-    { NOTE: resp released at ReportStatus destructor
+    { NOTE: resp releases at ReportStatus destructor
     resp := par.StatusToReport;
     if Assigned(resp) then
       FreeAndNil(resp);}
