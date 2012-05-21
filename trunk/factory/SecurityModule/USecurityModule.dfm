@@ -24,8 +24,6 @@ object frmSecurityModule: TfrmSecurityModule
     Align = alClient
     ReadOnly = True
     TabOrder = 0
-    ExplicitLeft = 96
-    ExplicitWidth = 459
   end
   object consoleCallTimer: TTimer
     Enabled = False
