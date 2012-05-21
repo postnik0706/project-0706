@@ -7,26 +7,30 @@ namespace ActivatorClient
 {
     public class BuildingSettings
     {
-        public int BUildingID { get; set; }
+        public int BuildingID { get; set; }
         public Uri URI { get; set; }
-        public TimeSpan PollingInterval { get; set; }
+        public int PollingInterval { get; set; }            // Seconds
+        public string Secret { get; set; }
+
+        public BuildingSettings(string StringLine)
+        {
+            string[] param = StringLine.Split( new char[] {'|'} );
+            
+            BuildingID = Int16.Parse(param[0]);
+            URI = new Uri(param[1]);
+            PollingInterval = Int16.Parse(param[2]);
+            Secret = param[3];
+        }
     }
 
-    class Buildings : IEnumerable<BuildingSettings>
+    /*
+     Buildings file location: ~\My Documents\Buildings.settings
+    */
+    class Buildings
     {
-        private List<BuildingSettings> FSettings = new List<BuildingSettings>();
+        private Dictionary<int, BuildingSettings> FSettings = new Dictionary<int, BuildingSettings>();
         private static Buildings pBuildings;
-        private const string BLDS_DATABASE_FILENAME = "bldgs.settings";
-
-        public IEnumerator<BuildingSettings> GetEnumerator()
-        {
-            return FSettings.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return FSettings.GetEnumerator();
-        }
+        private const string BLDS_DATABASE_FILENAME = "Buildings.settings";
 
         public static Buildings Get
         {
@@ -38,17 +42,23 @@ namespace ActivatorClient
             }
         }
 
-        static void Settings()
+        public static Dictionary<int, BuildingSettings> Settings
         {
-            // It was decided to put the buildings database to the MyDocuments folder
-            // of the current user, since it enforces some level of access limitation
+            get
+            {
+                return Get.FSettings;
+            }
+        }
 
-            string file = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + BLDS_DATABASE_FILENAME;
+        public static void Load()
+        {
+            string file = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + '\\'
+                + BLDS_DATABASE_FILENAME;
             foreach (var item in File.ReadAllLines(file))
-	        {
-		        //Utilities.ShowInColor("
-	        }
-            //pBldgsSettings = new BldgsSettings();
+            {
+                BuildingSettings b = new BuildingSettings(item);
+                Get.FSettings.Add(b.BuildingID, new BuildingSettings(item));
+            }
         }
     }
 }
