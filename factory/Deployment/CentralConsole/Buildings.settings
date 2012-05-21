@@ -1,0 +1,3 @@
+Office|http://localhost:8080|120|secret for office
+Workshop|http://localhost:8080|240|secret for workshop
+Warehouse|http://localhost:8080|350|secret for warehouse

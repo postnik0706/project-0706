@@ -7,7 +7,7 @@ namespace ActivatorClient
 {
     public class BuildingSettings
     {
-        public int BuildingID { get; set; }
+        public string BuildingID { get; set; }
         public Uri URI { get; set; }
         public int PollingInterval { get; set; }            // Seconds
         public string Secret { get; set; }
@@ -16,7 +16,7 @@ namespace ActivatorClient
         {
             string[] param = StringLine.Split( new char[] {'|'} );
             
-            BuildingID = Int16.Parse(param[0]);
+            BuildingID = param[0];
             URI = new Uri(param[1]);
             PollingInterval = Int16.Parse(param[2]);
             Secret = param[3];
@@ -28,7 +28,7 @@ namespace ActivatorClient
     */
     class Buildings
     {
-        private Dictionary<int, BuildingSettings> FSettings = new Dictionary<int, BuildingSettings>();
+        private Dictionary<string, BuildingSettings> FSettings = new Dictionary<string, BuildingSettings>();
         private static Buildings pBuildings;
         private const string BLDS_DATABASE_FILENAME = "Buildings.settings";
 
@@ -42,7 +42,7 @@ namespace ActivatorClient
             }
         }
 
-        public static Dictionary<int, BuildingSettings> Settings
+        public static Dictionary<string, BuildingSettings> Settings
         {
             get
             {

@@ -1,3 +1,3 @@
-BuildingID = Office
-Port   = 8080
+BuildingID = Warehouse
+Port   = 8082
 URI = http://localhost:8732/Design_Time_Addresses/ConsoleApplication/SecurityConsole

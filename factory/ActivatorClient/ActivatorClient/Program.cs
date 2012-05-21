@@ -11,7 +11,7 @@ namespace ActivatorClient
     {
         private static CmdLine instance = null;
         
-        private int? buildingID = null;
+        private string buildingID = null;
         private bool? isToActivate = null;
         private bool helpRequired = false;
         
@@ -25,13 +25,13 @@ namespace ActivatorClient
             }
         }
 
-        public int BuildingID
+        public string BuildingID
         {
             get
             {
-                if (!buildingID.HasValue)
+                if (buildingID == "")
                     throw new ArgumentException("BuildingID is not set");
-                return buildingID.Value;
+                return buildingID;
             }
         }
 
@@ -63,7 +63,7 @@ namespace ActivatorClient
                         Parameters.helpRequired = true;
                     else if (Params[i].ToUpper() == @"/BLDG")
                     {
-                        Parameters.buildingID = short.Parse(Params[i + 1]);
+                        Parameters.buildingID = Params[i + 1];
                         i++;
                     }
                     else if (Params[i].ToUpper() == @"/ACTIVATE")
@@ -81,7 +81,7 @@ namespace ActivatorClient
             }
 
             if ((!Parameters.helpRequired) &&
-                 ((!Parameters.buildingID.HasValue) || (!Parameters.isToActivate.HasValue)))
+                 ((Parameters.buildingID == "") || (!Parameters.isToActivate.HasValue)))
                 throw new ArgumentException("Not all the parameters were set up");
         }
 

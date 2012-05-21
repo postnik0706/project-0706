@@ -5,14 +5,15 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, OverbyteIcsWndControl, OverbyteIcsWSocket,
-  OverbyteIcsWSocketS, OverbyteIcsHttpSrv, ExtCtrls, inifiles, Generics.Collections;
+  OverbyteIcsWSocketS, OverbyteIcsHttpSrv, ExtCtrls, inifiles,
+  Generics.Collections;
 
 type
   TSensorMatrix = class;
   TSensorFileReader = class;
   TControlThread = class;
+
   TfrmSecurityModule = class(TForm)
-    Button1: TButton;
     log: TMemo;
     consoleCallTimer: TTimer;
     procedure FormCreate(Sender: TObject);
@@ -34,7 +35,8 @@ type
     FReadSoFar: integer;
     FRequest: AnsiString;
     procedure HandlePostedData(Sender, Client: TObject; Error: Word);
-    procedure HandlePostDocument(Sender, Client: TObject; var Flags: THttpGetFlag);
+    procedure HandlePostDocument(Sender, Client: TObject;
+      var Flags: THttpGetFlag);
     procedure HandleBeforeProcessRequest(Sender, Client: TObject);
   public
     constructor Create;
@@ -49,6 +51,7 @@ type
     FCritSec: TRTLCriticalSection;
   public
     class procedure Load;
+    class function BuildingID: string;
     class function Port: string;
     class function URI: string;
     class procedure Unload;
@@ -63,12 +66,12 @@ type
   private
     FSensorID: integer;
     FSensorType: string;
-    FSensorAlarmed: boolean;
+    FSensorAlarmed: Boolean;
   public
     constructor Create(SensorID: integer; SensorType: string);
     property SensorID: integer read FSensorID write FSensorID;
     property SensorType: string read FSensorType write FSensorType;
-    property SensorAlarmed: boolean read FSensorAlarmed write FSensorAlarmed;
+    property SensorAlarmed: Boolean read FSensorAlarmed write FSensorAlarmed;
   end;
 
   ISensorReader = interface
@@ -93,28 +96,28 @@ type
     procedure Poll(SensorReader: ISensorReader);
     procedure Load;
 
-    property Sensors: TList<TSensor> read FSensors;
+    property Sensors: TList<TSensor>read FSensors;
   end;
 
 var
   frmSecurityModule: TfrmSecurityModule;
 
 const
-  TERMINATION_POLL_TIMEOUT = 1000;    // msec
+  TERMINATION_POLL_TIMEOUT = 1000; // msec
 
 implementation
 
 {$R *.dfm}
 
 uses
-  strutils, UWebSecurityConsole, SOAPHttpTrans, SOAPHTTPClient;
+  strutils, UWebSecurityConsole, SOAPHttpTrans, SOAPHTTPClient, XSBuiltIns;
 
 var
   gConfiguration: TConfiguration;
   gPostString: string;
-  gPostCritSec: TRTLCriticalSection;      // TODO: make a singleton class
+  gPostCritSec: TRTLCriticalSection; // TODO: make a singleton class
 
-{ TConfiguration }
+  { TConfiguration }
 constructor TConfiguration.Create;
 begin
   inherited Create;
@@ -132,7 +135,7 @@ end;
 
 class procedure TConfiguration.Load;
 var
-  i: Integer;
+  i: integer;
 const
   INI_FILENAME = 'ConsoleLink.settings';
 begin
@@ -141,8 +144,8 @@ begin
     gConfiguration := TConfiguration.Create;
   end;
 
-  gConfiguration.Settings.LoadFromFile(
-    IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + INI_FILENAME);
+  gConfiguration.Settings.LoadFromFile(IncludeTrailingPathDelimiter
+      (ExtractFilePath(ParamStr(0))) + INI_FILENAME);
   for i := 0 to gConfiguration.Settings.Count - 1 do
     gConfiguration.Settings[i] := NamePartToUpper(gConfiguration.Settings[i]);
 end;
@@ -172,6 +175,16 @@ begin
   end;
 end;
 
+class function TConfiguration.BuildingID: string;
+begin
+  EnterCriticalSection(gConfiguration.FCritSec);
+  try
+    Result := Trim(gConfiguration.Settings.Values['BuildingID']);
+  finally
+    LeaveCriticalSection(gConfiguration.FCritSec);
+  end;
+end;
+
 class procedure TConfiguration.Unload;
 begin
   if Assigned(gConfiguration) then
@@ -183,17 +196,20 @@ var
   name: string;
 begin
   name := Trim(AnsiUpperCase(Copy(NameValue, 1, Pos('=', NameValue) - 1)));
-  result := name
-    + IfThen(name <> '', '=')
-    + Trim(Copy(NameValue, Pos('=', NameValue) + 1, Length(NameValue) - Pos('=', NameValue)));
+  Result := name + IfThen(name <> '', '=') + Trim
+    (Copy(NameValue, Pos('=', NameValue) + 1, Length(NameValue) - Pos
+        ('=', NameValue)));
 end;
 
 { TfrmSecurityModule }
-procedure TfrmSecurityModule.FormCloseQuery(Sender: TObject;
-  var CanClose: Boolean);
+procedure TfrmSecurityModule.FormCloseQuery
+  (Sender: TObject; var CanClose: Boolean);
 begin
-  FControlThread.Terminate;
-  FControlThread.WaitFor;
+  if Assigned(FControlThread) then
+  begin
+    FControlThread.Terminate;
+    FControlThread.WaitFor;
+  end;
   CanClose := True;
 end;
 
@@ -204,6 +220,7 @@ begin
   FSensorMatrix := TSensorMatrix.Create;
   FSensorFileReader := TSensorFileReader.Create;
   FSensorMatrix.Load;
+  LogMessage('Service started');
 end;
 
 procedure TfrmSecurityModule.FormDestroy(Sender: TObject);
@@ -219,24 +236,29 @@ end;
 
 procedure TfrmSecurityModule.ControlWebService;
 var
-  settings: TStrings;
-  bActivate: boolean;
+  Settings: TStrings;
+  bActivate: Boolean;
 begin
   gPostString := ReplaceStr(gPostString, #10, #13#10);
-  LogMessage(Format('Web Service command event: %s', [ReplaceStr(gPostString, #13#10, '/')]));
+  LogMessage(Format('Web Service command event: %s',
+      [ReplaceStr(gPostString, #13#10, '/')]));
 
   consoleCallTimer.Enabled := False;
-  settings := TStringList.Create;
+  Settings := TStringList.Create;
   try
-    settings.Text := gPostString;
-    bActivate := settings.Values['ACTIVATE'] = '1';
+    Settings.Text := gPostString;
+    bActivate := Settings.Values['ACTIVATE'] = '1';
     LogMessage(IfThen(bActivate, 'Activating the sensors...',
-      'Deactivating the sensors...'));
-    consoleCallTimer.Interval := StrToInt(settings.Values['POLLING']) * 1000;
+        'Deactivating the sensors...'));
+    consoleCallTimer.Interval := StrToInt(Settings.Values['POLLING']) * 1000;
+
+    if bActivate then // First run
+      consoleCallTimerTimer(consoleCallTimer);
+
     consoleCallTimer.Enabled := bActivate;
     LogMessage('Done');
   finally
-    FreeAndNil(settings);
+    FreeAndNil(Settings);
   end;
 end;
 
@@ -273,7 +295,7 @@ var
 begin
   FServer.Start;
   DummyHandle := INVALID_HANDLE_VALUE;
-  while true do
+  while True do
   begin
     if Terminated then
       break;
@@ -331,7 +353,6 @@ end;
 procedure TfrmSecurityModule.consoleCallTimerTimer(Sender: TObject);
 var
   par: ReportStatus;
-  par1: ReportStatusResponse;
   arr: ArrayOfSensorData;
   i: integer;
 begin
@@ -346,28 +367,37 @@ begin
     for i := 0 to FSensorMatrix.Sensors.Count - 1 do
     begin
       arr[i] := SensorData.Create;
+      arr[i].BuildingID := TConfiguration.BuildingID;
       arr[i].SensorID := FSensorMatrix.Sensors[i].SensorID;
       arr[i].IsAlarmed := FSensorMatrix.Sensors[i].SensorAlarmed;
       arr[i].SensorType := FSensorMatrix.Sensors[i].SensorType;
+      arr[i].MeasureDateTime := TXSDateTime.Create;
+      arr[i].MeasureDateTime.AsDateTime := Now;
     end;
 
     try
-      GetISecurityConsole(False, TConfiguration.URI).ReportStatus(par, par1);
+      GetISecurityConsole(False, TConfiguration.URI).ReportStatus(par);
     except
       on E: Exception do
       begin
         LogMessage(Format('Error sending status to the security console: %s',
-          [E.Message]));
+            [E.Message]));
       end;
     end;
   finally
     for i := 0 to FSensorMatrix.Sensors.Count - 1 do
+    begin
+      { NOTE: release of arr[i] takes care of this
+        ptr := arr[i].MeasureDateTime;
+        if Assigned(ptr) then
+        FreeAndNil(ptr); }
       if Assigned(arr[i]) then
         FreeAndNil(arr[i]);
+    end;
     { NOTE: resp releases at ReportStatus destructor
-    resp := par.StatusToReport;
-    if Assigned(resp) then
-      FreeAndNil(resp);}
+      resp := par.StatusToReport;
+      if Assigned(resp) then
+      FreeAndNil(resp); }
     if Assigned(par) then
       FreeAndNil(par);
   end;
@@ -379,8 +409,8 @@ const
   INI_FILENAME = 'SensorsStatus.settings';
 begin
   inherited Create;
-  FIni := TIniFile.Create(
-    IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + INI_FILENAME);
+  FIni := TIniFile.Create(IncludeTrailingPathDelimiter
+      (ExtractFilePath(ParamStr(0))) + INI_FILENAME);
 end;
 
 destructor TSensorFileReader.Destroy;
@@ -390,12 +420,9 @@ begin
 end;
 
 procedure TSensorFileReader.ReadStatus(Sensor: TSensor);
-var
-  sensorID: string;
 begin
-  sensorID := 'S' + IntToStr(Sensor.SensorID);
-  Sensor.SensorType := FIni.ReadString(sensorID, 'Type', '');
-  Sensor.SensorAlarmed := FIni.ReadString(sensorID, 'Status', '1') = '1';
+  Sensor.SensorAlarmed := FIni.ReadString('S' + IntToStr(Sensor.SensorID),
+    'Status', '1') = '1';
 end;
 
 { TSensor }
@@ -436,14 +463,14 @@ var
   sections: TStrings;
   i: string;
 begin
-  ini := TIniFile.Create(
-    IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + INI_FILENAME);
+  ini := TIniFile.Create(IncludeTrailingPathDelimiter
+      (ExtractFilePath(ParamStr(0))) + INI_FILENAME);
   try
     sections := TStringList.Create;
     ini.ReadSections(sections);
     for i in sections do
       FSensors.Add(TSensor.Create(StrToInt(Copy(i, 2, Length(i) - 1)),
-        ini.ReadString(i, 'Type', '')));
+          ini.ReadString(i, 'Type', '')));
   finally
     FreeAndNil(sections);
     FreeAndNil(ini);
@@ -451,9 +478,11 @@ begin
 end;
 
 initialization
-  InitializeCriticalSection(gPostCritSec);
+
+InitializeCriticalSection(gPostCritSec);
 
 finalization
-  DeleteCriticalSection(gPostCritSec);
+
+DeleteCriticalSection(gPostCritSec);
 
 end.
