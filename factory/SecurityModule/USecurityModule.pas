@@ -15,24 +15,25 @@ type
 
   TfrmSecurityModule = class(TForm)
     log: TMemo;
-    consoleCallTimer: TTimer;
+    consoleCallTimer: TTimer;                   // generating 'report to the console' event
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure consoleCallTimerTimer(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
-    FSensorMatrix: TSensorMatrix;
-    FSensorFileReader: TSensorFileReader;
-    FControlThread: TControlThread;
+    FSensorMatrix: TSensorMatrix;               // Hoding data of all sensors of this bldg
+    FSensorFileReader: TSensorFileReader;       // Stub for emulating sensor input
+    FControlThread: TControlThread;             // Thread hosting the activation/deactivation web service
     procedure LogMessage(const Message: string);
   public
-    procedure ControlWebService;
+    procedure ControlConsoleClient;             // is used for controlling the calls to
   end;
 
+  { Provides Activation/Deactivation updates }
   TControlThread = class(TThread)
   private
-    FServer: THttpServer;
-    FReadSoFar: integer;
+    FServer: THttpServer;                       // Hosts the web server for activation/deactivation
+    FReadSoFar: integer;                        // utility fields as HTTP data may be coming in in chunks
     FRequest: AnsiString;
     procedure HandlePostedData(Sender, Client: TObject; Error: Word);
     procedure HandlePostDocument(Sender, Client: TObject;
@@ -45,15 +46,16 @@ type
     procedure Execute; override;
   end;
 
+  { Reads configuration data; is used by the main form and the thread }
   TConfiguration = class
   private
-    FSettings: TStrings;
+    FSettings: TStrings;              // uses a TStringList object to load and hold settings
     FCritSec: TRTLCriticalSection;
   public
-    class procedure Load;
-    class function BuildingID: string;
-    class function Port: string;
-    class function URI: string;
+    class procedure Load;             // Loads settings
+    class function BuildingID: string;// ID of this building
+    class function Port: string;      // Port used for the activation/deactivation server hosted in this exe
+    class function URI: string;       // URI of the central location
     class procedure Unload;
     class function NamePartToUpper(const NameValue: string): string;
     constructor Create;
@@ -62,6 +64,7 @@ type
     property Settings: TStrings read FSettings write FSettings;
   end;
 
+  { Holds data of one sensor }
   TSensor = class
   private
     FSensorID: integer;
@@ -74,27 +77,29 @@ type
     property SensorAlarmed: Boolean read FSensorAlarmed write FSensorAlarmed;
   end;
 
-  ISensorReader = interface
+  ISensorReader = interface                  // Interface used for reading data
     procedure ReadStatus(Sensor: TSensor);
   end;
 
+  { We implement the ISensorReader interface to emulate actual sensor readings }
   TSensorFileReader = class(TInterfacedObject, ISensorReader)
-  private
+  private                                    // see also TSensorMatrix.Poll
     FIni: TIniFile;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure ReadStatus(Sensor: TSensor);
+    procedure ReadStatus(Sensor: TSensor);   // Reads the status of one sensor
   end;
 
+  { Reads all censors status in a particular building }
   TSensorMatrix = class
   private
-    FSensors: TList<TSensor>;
+    FSensors: TList<TSensor>;                // List of sensors
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Poll(SensorReader: ISensorReader);
-    procedure Load;
+    procedure Poll(SensorReader: ISensorReader);  // Uses generic interface to employ emulation of sensor reading
+    procedure Load;                          // Loads types from the 'settings' file - this is not sensor reading but supposed to be static data
 
     property Sensors: TList<TSensor>read FSensors;
   end;
@@ -103,7 +108,7 @@ var
   frmSecurityModule: TfrmSecurityModule;
 
 const
-  TERMINATION_POLL_TIMEOUT = 1000; // msec
+  TERMINATION_POLL_TIMEOUT = 1000;      // Check for thread termination with this period, msec
 
 implementation
 
@@ -117,7 +122,7 @@ var
   gPostString: string;
   gPostCritSec: TRTLCriticalSection; // TODO: make a singleton class
 
-  { TConfiguration }
+{ TConfiguration }
 constructor TConfiguration.Create;
 begin
   inherited Create;
@@ -225,8 +230,7 @@ end;
 
 procedure TfrmSecurityModule.FormDestroy(Sender: TObject);
 begin
-  if Assigned(FSensorFileReader) then
-    FreeAndNil(FSensorFileReader);
+  FSensorFileReader := nil;             // interfaced object
   if Assigned(FSensorMatrix) then
     FreeAndNil(FSensorMatrix);
 
@@ -234,19 +238,25 @@ begin
   TConfiguration.Unload;
 end;
 
-procedure TfrmSecurityModule.ControlWebService;
+procedure TfrmSecurityModule.ControlConsoleClient;
 var
   Settings: TStrings;
   bActivate: Boolean;
+  i: Integer;
+  msg: string;
 begin
   gPostString := ReplaceStr(gPostString, #10, #13#10);
-  LogMessage(Format('Web Service command event: %s',
-      [ReplaceStr(gPostString, #13#10, '/')]));
 
   consoleCallTimer.Enabled := False;
   Settings := TStringList.Create;
   try
     Settings.Text := gPostString;
+    msg := '';
+    for i := 0 to Settings.Count - 1 do
+      if Pos('SECRET', Settings[i]) = 0  then
+        msg := msg + IfThen(i>0, '/') + Settings[i];
+    LogMessage(Format('Web Service command event: %s', [msg]));
+
     bActivate := Settings.Values['ACTIVATE'] = '1';
     LogMessage(IfThen(bActivate, 'Activating the sensors...',
         'Deactivating the sensors...'));
@@ -338,7 +348,7 @@ begin
     finally
       LeaveCriticalSection(gPostCritSec);
     end;
-    Synchronize(frmSecurityModule.ControlWebService);
+    Synchronize(frmSecurityModule.ControlConsoleClient);
 
     ClientCnx.AnswerString(Dummy, '', '', '', 'OK');
   end;
@@ -376,6 +386,7 @@ begin
     end;
 
     try
+      // WCF service call
       GetISecurityConsole(False, TConfiguration.URI).ReportStatus(par);
     except
       on E: Exception do
@@ -387,7 +398,7 @@ begin
   finally
     for i := 0 to FSensorMatrix.Sensors.Count - 1 do
     begin
-      { NOTE: release of arr[i] takes care of this
+      { NOTE: arr[i] takes care of this
         ptr := arr[i].MeasureDateTime;
         if Assigned(ptr) then
         FreeAndNil(ptr); }
