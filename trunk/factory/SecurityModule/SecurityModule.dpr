@@ -2,7 +2,7 @@ program SecurityModule;
 
 uses
   Forms,
-  USecurityModule in 'USecurityModule.pas' {Form1},
+  USecurityModule in 'USecurityModule.pas' {frmSecurityModule},
   SOAPHTTPTrans in 'C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\source\Win32\soap\SOAPHTTPTrans.pas',
   UWebSecurityConsole in 'UWebSecurityConsole.pas';
 
@@ -11,6 +11,6 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfrmSecurityModule, frmSecurityModule);
   Application.Run;
 end.

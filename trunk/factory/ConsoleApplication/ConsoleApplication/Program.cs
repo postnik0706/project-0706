@@ -41,6 +41,8 @@ namespace ConsoleApplication
         {
             foreach (var item in StatusToReport.BuildingSensorData)
             {
+                if (item.IsAlarmed)
+                
                 Console.WriteLine(item.SensorID);
             }
             Console.WriteLine("Test output");
@@ -54,14 +56,14 @@ namespace ConsoleApplication
             using (ServiceHost host = new ServiceHost(typeof(SecurityConsole)))
             {
                 Utilities.ShowInColor(String.Format("Console has started up: {0}", DateTime.UtcNow), ConsoleColor.Green);
-                Utilities.ShowInColor("Press any key to stop");
+                Utilities.ShowInColor("Press \"S\" to stop");
 
                 Trace.TraceInformation("Starting");
                 Trace.WriteLine("Starting", "Information");
                 host.Open();
-
-                Console.ReadKey(true);
-
+                
+                while (Console.ReadKey(true).Key != System.ConsoleKey.S) ;
+                
                 host.Close();
             }
         }

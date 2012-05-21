@@ -20,6 +20,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_UnitSearchPath>..\OverbyteIcs\trunk\Delphi\Vc32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_Optimize>false</DCC_Optimize>
 			<DCC_DependencyCheckOutputName>SecurityModule.exe</DCC_DependencyCheckOutputName>
 			<DCC_ImageBase>00400000</DCC_ImageBase>
@@ -47,7 +48,7 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<DCCReference Include="USecurityModule.pas">
-				<Form>Form1</Form>
+				<Form>frmSecurityModule</Form>
 			</DCCReference>
 			<DCCReference Include="C:\Program Files (x86)\Embarcadero\RAD Studio\7.0\source\Win32\soap\SOAPHTTPTrans.pas"/>
 			<DCCReference Include="UWebSecurityConsole.pas"/>
