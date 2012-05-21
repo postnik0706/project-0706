@@ -50,6 +50,7 @@ type
   public
     class procedure Load;
     class function Port: string;
+    class function URI: string;
     class procedure Unload;
     class function NamePartToUpper(const NameValue: string): string;
     constructor Create;
@@ -156,6 +157,16 @@ begin
     if p = '' then
       p := '80';
     Result := p;
+  finally
+    LeaveCriticalSection(gConfiguration.FCritSec);
+  end;
+end;
+
+class function TConfiguration.URI: string;
+begin
+  EnterCriticalSection(gConfiguration.FCritSec);
+  try
+    Result := Trim(gConfiguration.Settings.Values['URI']);
   finally
     LeaveCriticalSection(gConfiguration.FCritSec);
   end;
@@ -323,7 +334,6 @@ var
   par1: ReportStatusResponse;
   arr: ArrayOfSensorData;
   i: integer;
-  resp: BuildingSensorsResponse;
 begin
   par := ReportStatus.Create;
   try
@@ -342,8 +352,7 @@ begin
     end;
 
     try
-      GetISecurityConsole(False,
-        .ReportStatus(par, par1);
+      GetISecurityConsole(False, TConfiguration.URI).ReportStatus(par, par1);
     except
       on E: Exception do
       begin
