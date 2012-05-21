@@ -1,0 +1,48 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{4240D378-A396-4B01-95EB-42DF4170298A}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="SecurityModule\SecurityModule.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="SecurityModule\Test\SecurityModuleTests.dproj">
+				<Dependencies/>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Default.Personality/>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="SecurityModule">
+			<MSBuild Projects="SecurityModule\SecurityModule.dproj"/>
+		</Target>
+		<Target Name="SecurityModule:Clean">
+			<MSBuild Targets="Clean" Projects="SecurityModule\SecurityModule.dproj"/>
+		</Target>
+		<Target Name="SecurityModule:Make">
+			<MSBuild Targets="Make" Projects="SecurityModule\SecurityModule.dproj"/>
+		</Target>
+		<Target Name="SecurityModuleTests">
+			<MSBuild Projects="SecurityModule\Test\SecurityModuleTests.dproj"/>
+		</Target>
+		<Target Name="SecurityModuleTests:Clean">
+			<MSBuild Targets="Clean" Projects="SecurityModule\Test\SecurityModuleTests.dproj"/>
+		</Target>
+		<Target Name="SecurityModuleTests:Make">
+			<MSBuild Targets="Make" Projects="SecurityModule\Test\SecurityModuleTests.dproj"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="SecurityModule;SecurityModuleTests"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="SecurityModule:Clean;SecurityModuleTests:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="SecurityModule:Make;SecurityModuleTests:Make"/>
+		</Target>
+		<Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+	</Project>
