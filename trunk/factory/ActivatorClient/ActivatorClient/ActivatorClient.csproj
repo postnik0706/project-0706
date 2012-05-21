@@ -47,7 +47,6 @@
       <Link>utilities.cs</Link>
     </Compile>
     <Compile Include="BldgsSettings.cs" />
-    <Compile Include="Dictionary.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
