@@ -1,0 +1,1 @@
+Buildings.settings needs to be copied to "My Documents" of hte current user
