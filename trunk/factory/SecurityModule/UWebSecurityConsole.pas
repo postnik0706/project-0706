@@ -8,9 +8,9 @@
 //  >Import : http://localhost:8732/Design_Time_Addresses/ConsoleApplication/SecurityConsole/?xsd=xsd2
 //  >Import : http://localhost:8732/Design_Time_Addresses/ConsoleApplication/SecurityConsole/?xsd=xsd1
 // Encoding : utf-8
-// Codegen  : [wfOneOutIsReturn-, wfUnwindLiteralParameters-, wfForceSOAP11+, wfForceSOAP12+]
+// Codegen  : [wfUnwindLiteralParameters-]
 // Version  : 1.0
-// (5/19/2012 4:32:24 PM - - $Rev: 24171 $)
+// (5/20/2012 8:41:03 PM - - $Rev: 24171 $)
 // ************************************************************************ //
 
 unit UWebSecurityConsole;
@@ -21,6 +21,9 @@ uses InvokeRegistry, SOAPHTTPClient, Types, XSBuiltIns;
 
 const
   IS_OPTN = $0001;
+  IS_UNBD = $0002;
+  IS_NLBL = $0004;
+  IS_REF  = $0080;
 
 
 type
@@ -32,9 +35,10 @@ type
   // typically map to predefined/known XML or Embarcadero types; however, they could also 
   // indicate incorrect WSDL documents that failed to declare or import a schema type.
   // ************************************************************************ //
-  // !:boolean         - "http://www.w3.org/2001/XMLSchema"[Gbl]
-  // !:int             - "http://www.w3.org/2001/XMLSchema"[Gbl]
   // !:string          - "http://www.w3.org/2001/XMLSchema"[Gbl]
+  // !:boolean         - "http://www.w3.org/2001/XMLSchema"[Gbl]
+  // !:dateTime        - "http://www.w3.org/2001/XMLSchema"[Gbl]
+  // !:int             - "http://www.w3.org/2001/XMLSchema"[Gbl]
 
   BuildingSensorsResponse = class;              { "http://schemas.datacontract.org/2004/07/ConsoleApplication"[GblCplx] }
   SensorData           = class;                 { "http://schemas.datacontract.org/2004/07/ConsoleApplication"[GblCplx] }
@@ -59,7 +63,7 @@ type
   public
     destructor Destroy; override;
   published
-    property BuildingSensorData: ArrayOfSensorData  Index (IS_OPTN) read FBuildingSensorData write SetBuildingSensorData stored BuildingSensorData_Specified;
+    property BuildingSensorData: ArrayOfSensorData  Index (IS_OPTN or IS_NLBL) read FBuildingSensorData write SetBuildingSensorData stored BuildingSensorData_Specified;
   end;
 
 
@@ -70,22 +74,34 @@ type
   // ************************************************************************ //
   SensorData = class(TRemotable)
   private
+    FBuildingID: string;
+    FBuildingID_Specified: boolean;
     FIsAlarmed: Boolean;
     FIsAlarmed_Specified: boolean;
+    FMeasureDateTime: TXSDateTime;
+    FMeasureDateTime_Specified: boolean;
     FSensorID: Integer;
     FSensorID_Specified: boolean;
     FSensorType: string;
     FSensorType_Specified: boolean;
+    procedure SetBuildingID(Index: Integer; const Astring: string);
+    function  BuildingID_Specified(Index: Integer): boolean;
     procedure SetIsAlarmed(Index: Integer; const ABoolean: Boolean);
     function  IsAlarmed_Specified(Index: Integer): boolean;
+    procedure SetMeasureDateTime(Index: Integer; const ATXSDateTime: TXSDateTime);
+    function  MeasureDateTime_Specified(Index: Integer): boolean;
     procedure SetSensorID(Index: Integer; const AInteger: Integer);
     function  SensorID_Specified(Index: Integer): boolean;
     procedure SetSensorType(Index: Integer; const Astring: string);
     function  SensorType_Specified(Index: Integer): boolean;
+  public
+    destructor Destroy; override;
   published
-    property IsAlarmed:  Boolean  Index (IS_OPTN) read FIsAlarmed write SetIsAlarmed stored IsAlarmed_Specified;
-    property SensorID:   Integer  Index (IS_OPTN) read FSensorID write SetSensorID stored SensorID_Specified;
-    property SensorType: string   Index (IS_OPTN) read FSensorType write SetSensorType stored SensorType_Specified;
+    property BuildingID:      string       Index (IS_OPTN or IS_NLBL) read FBuildingID write SetBuildingID stored BuildingID_Specified;
+    property IsAlarmed:       Boolean      Index (IS_OPTN) read FIsAlarmed write SetIsAlarmed stored IsAlarmed_Specified;
+    property MeasureDateTime: TXSDateTime  Index (IS_OPTN) read FMeasureDateTime write SetMeasureDateTime stored MeasureDateTime_Specified;
+    property SensorID:        Integer      Index (IS_OPTN) read FSensorID write SetSensorID stored SensorID_Specified;
+    property SensorType:      string       Index (IS_OPTN or IS_NLBL) read FSensorType write SetSensorType stored SensorType_Specified;
   end;
 
 
@@ -129,8 +145,8 @@ type
   public
     destructor Destroy; override;
   published
-    property StatusToReport: BuildingSensorsResponse  Index (IS_OPTN) read FStatusToReport write SetStatusToReport stored StatusToReport_Specified;
-    property Test:           string                   Index (IS_OPTN) read FTest write SetTest stored Test_Specified;
+    property StatusToReport: BuildingSensorsResponse  Index (IS_OPTN or IS_NLBL) read FStatusToReport write SetStatusToReport stored StatusToReport_Specified;
+    property Test:           string                   Index (IS_OPTN or IS_NLBL) read FTest write SetTest stored Test_Specified;
   end;
 
 
@@ -147,13 +163,16 @@ type
 
   // ************************************************************************ //
   // Namespace : http://secured.fabric.com/2012/05/Security
+  // transport : http://schemas.xmlsoap.org/soap/http
+  // style     : document
   // binding   : BasicHttpBinding_ISecurityConsole
   // service   : SecurityConsole
   // port      : BasicHttpBinding_ISecurityConsole
+  // URL       : http://localhost:8732/Design_Time_Addresses/ConsoleApplication/SecurityConsole/
   // ************************************************************************ //
   ISecurityConsole = interface(IInvokable)
   ['{6C7E3C68-810E-1176-0C23-19E6C21F7BA4}']
-    procedure ReportStatus(const parameters: ReportStatus; out parameters1: ReportStatusResponse); stdcall;
+    function  ReportStatus(const parameters: ReportStatus): ReportStatusResponse; stdcall;
   end;
 
 function GetISecurityConsole(UseWSDL: Boolean=System.False; Addr: string=''; HTTPRIO: THTTPRIO = nil): ISecurityConsole;
@@ -165,7 +184,7 @@ implementation
 function GetISecurityConsole(UseWSDL: Boolean; Addr: string; HTTPRIO: THTTPRIO): ISecurityConsole;
 const
   defWSDL = 'http://localhost:8732/Design_Time_Addresses/ConsoleApplication/SecurityConsole/?wsdl';
-  defURL  = 'http://localhost:8732/Design_Time_Addresses/ConsoleApplication/SecurityConsole';
+  defURL  = 'http://localhost:8732/Design_Time_Addresses/ConsoleApplication/SecurityConsole/';
   defSvc  = 'SecurityConsole';
   defPrt  = 'BasicHttpBinding_ISecurityConsole';
 var
@@ -220,6 +239,23 @@ begin
   Result := FBuildingSensorData_Specified;
 end;
 
+destructor SensorData.Destroy;
+begin
+  SysUtils.FreeAndNil(FMeasureDateTime);
+  inherited Destroy;
+end;
+
+procedure SensorData.SetBuildingID(Index: Integer; const Astring: string);
+begin
+  FBuildingID := Astring;
+  FBuildingID_Specified := True;
+end;
+
+function SensorData.BuildingID_Specified(Index: Integer): boolean;
+begin
+  Result := FBuildingID_Specified;
+end;
+
 procedure SensorData.SetIsAlarmed(Index: Integer; const ABoolean: Boolean);
 begin
   FIsAlarmed := ABoolean;
@@ -229,6 +265,17 @@ end;
 function SensorData.IsAlarmed_Specified(Index: Integer): boolean;
 begin
   Result := FIsAlarmed_Specified;
+end;
+
+procedure SensorData.SetMeasureDateTime(Index: Integer; const ATXSDateTime: TXSDateTime);
+begin
+  FMeasureDateTime := ATXSDateTime;
+  FMeasureDateTime_Specified := True;
+end;
+
+function SensorData.MeasureDateTime_Specified(Index: Integer): boolean;
+begin
+  Result := FMeasureDateTime_Specified;
 end;
 
 procedure SensorData.SetSensorID(Index: Integer; const AInteger: Integer);
@@ -284,8 +331,8 @@ end;
 initialization
   InvRegistry.RegisterInterface(TypeInfo(ISecurityConsole), 'http://secured.fabric.com/2012/05/Security', 'utf-8');
   InvRegistry.RegisterDefaultSOAPAction(TypeInfo(ISecurityConsole), '');
-  InvRegistry.RegisterInvokeOptions(TypeInfo(ISecurityConsole), ioLiteral);
   InvRegistry.RegisterInvokeOptions(TypeInfo(ISecurityConsole), ioDocument);
+  InvRegistry.RegisterInvokeOptions(TypeInfo(ISecurityConsole), ioLiteral);
   InvRegistry.RegisterExternalParamName(TypeInfo(ISecurityConsole), 'ReportStatus', 'parameters1', 'parameters');
   RemClassRegistry.RegisterXSInfo(TypeInfo(ArrayOfSensorData), 'http://schemas.datacontract.org/2004/07/ConsoleApplication', 'ArrayOfSensorData');
   RemClassRegistry.RegisterXSClass(BuildingSensorsResponse, 'http://schemas.datacontract.org/2004/07/ConsoleApplication', 'BuildingSensorsResponse');

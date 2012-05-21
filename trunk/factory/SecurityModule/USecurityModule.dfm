@@ -16,22 +16,16 @@ object frmSecurityModule: TfrmSecurityModule
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
-  object Button1: TButton
-    Left = 32
-    Top = 24
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 0
-  end
   object log: TMemo
-    Left = 136
+    Left = 0
     Top = 0
-    Width = 419
+    Width = 555
     Height = 351
-    Align = alRight
+    Align = alClient
     ReadOnly = True
-    TabOrder = 1
+    TabOrder = 0
+    ExplicitLeft = 96
+    ExplicitWidth = 459
   end
   object consoleCallTimer: TTimer
     Enabled = False
