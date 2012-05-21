@@ -1,1 +1,2 @@
 Port   = 8080
+URI = http://localhost:8732/Design_Time_Addresses/ConsoleApplication/SecurityConsole
