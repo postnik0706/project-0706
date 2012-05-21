@@ -27,8 +27,14 @@ type
     procedure ListenClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure servClientConnect(Sender, Client: TObject; Error: Word);
+    procedure servPostDocument(Sender, Client: TObject;
+      var Flags: THttpGetFlag);
+    procedure servClientDisconnect(Sender, Client: TObject; Error: Word);
+    procedure servPostedData(Sender, Client: TObject; Error: Word);
+    procedure servBeforeProcessRequest(Sender, Client: TObject);
   private
-    { Private declarations }
+    FReadSoFar: integer;
+    FRequest: AnsiString;
   public
     { Public declarations }
   end;
@@ -64,9 +70,56 @@ begin
   end;
 end;
 
+procedure TForm1.servBeforeProcessRequest(Sender, Client: TObject);
+begin
+  FReadSoFar := 0;
+  FRequest := '';
+end;
+
 procedure TForm1.servClientConnect(Sender, Client: TObject; Error: Word);
 begin
   log.Lines.Add('Client connected');
+  log.Lines.Add(Format('Number of connections: %d', [THttpServer(Sender).ClientCount]));
+end;
+
+procedure TForm1.servClientDisconnect(Sender, Client: TObject; Error: Word);
+begin
+  log.Lines.Add('Client disconnected');
+end;
+
+procedure TForm1.servPostDocument(Sender, Client: TObject;
+  var Flags: THttpGetFlag);
+begin
+  Flags := hgAcceptData;
+end;
+
+procedure TForm1.servPostedData(Sender, Client: TObject; Error: Word);
+var
+  buf: PAnsiChar;
+  ClientCnx: THttpConnection;
+  dataLen: integer;
+  Dummy: THttpGetFlag;
+  Remaining: integer;
+  Junk: array [0..255] of AnsiChar;
+begin
+  ClientCnx := THttpConnection(Client);
+
+  { Information might be received in chunks }
+  buf := AnsiStrAlloc(ClientCnx.RequestContentLength + 1);
+  try
+    dataLen := ClientCnx.Receive(buf, ClientCnx.RequestContentLength);
+    FReadSoFar := FReadSoFar + dataLen;
+    buf[FReadSoFar] := #0;
+    FRequest := FRequest + StrPas(buf);
+  finally
+    StrDispose(buf);
+  end;
+  if FReadSoFar >= ClientCnx.RequestContentLength then
+  begin
+    FReadSoFar := 0;
+    log.Lines.Add(String(FRequest));
+    ClientCnx.AnswerString(Dummy, '', '', '', 'OK');
+  end;
 end;
 
 { TConfiguration }
