@@ -83,7 +83,7 @@ namespace app_2
                 List<Contact> contacts = Contact.SampleData();
                 List<CallLog> calls = CallLog.SampleData();
 
-                Dictionary<string, List<CallLog>> callGroups = new Dictionary<string,List<CallLog>>();
+                Dictionary<string, List<CallLog>> callGroups = new Dictionary<string, List<CallLog>>();
 
                 foreach (CallLog call in calls)
                 {
@@ -102,7 +102,8 @@ namespace app_2
                         }
                     }
                 }
-                contacts.Sort( (c1, c2) => {
+                contacts.Sort((c1, c2) =>
+                {
                     return c1.LastName.CompareTo(c2.LastName);
                 });
 
@@ -170,6 +171,36 @@ namespace app_2
                 );
 
                 Console.WriteLine(doc.ToString());
+            }
+
+            {
+                var q = from c in Contact.SampleData()
+                        where c.DateOfBirth.AddYears(75) > DateTime.Now
+                        orderby c.DateOfBirth descending
+                        select string.Format("{0} {1} b.{2}",
+                            c.LastName,
+                            c.FirstName,
+                            c.DateOfBirth.ToString("dd-MMM-yyyy"));
+                foreach (var item in q)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+
+            {
+                var q = from c in Contact.SampleData()
+                        group c by c.State;
+
+                foreach (var group in q)
+                {
+                    Console.WriteLine("State: {0}", group.Key);
+                    foreach (Contact c in group)
+                    {
+                        Console.WriteLine("  {0} {1}",
+                            c.FirstName,
+                            c.LastName);
+                    }
+                }
             }
         }
     }
