@@ -6,52 +6,10 @@ using System.Collections;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
+using entities;
 
 namespace app_2
 {
-    class Contact
-    {
-        public string LastName { get; set; }
-        public string State { get; set; }
-        public string Phone { get; set; }
-        public string Key { get { return State; } }
-
-        public static List<Contact> SampleData()
-        {
-            return new List<Contact>() {
-                new Contact() { LastName = "Postnikov", State="LA", Phone = "1111" },
-                new Contact() { LastName = "Tkachenko", State="WA",  Phone = "2222" },
-                new Contact() { LastName = "Ivanov", State = "WA", Phone = "3333" },
-                new Contact() { LastName = "Petrov", State = "LA", Phone = "4444" },
-                new Contact() {LastName = "Sidorov", State = "RU", Phone = "5555" },
-                new Contact() {LastName = "Abdoulkhalikov", State = "LA", Phone = "6666" }
-            };
-        }
-    }
-
-    class CallLog
-    {
-        public string Phone { get; set; }
-        public TimeSpan Duration { get; set; }
-        public bool IsIncoming { get; set; }
-
-        public static List<CallLog> SampleData()
-        {
-            return new List<CallLog>() {
-                new CallLog() { Phone = "1111", Duration = new TimeSpan(0, 1, 99), IsIncoming = true },
-                new CallLog() { Phone = "2222", Duration = new TimeSpan(1, 13, 22), IsIncoming = false },
-                new CallLog() { Phone = "3333", Duration = new TimeSpan(0, 1, 32), IsIncoming = true },
-                new CallLog() { Phone = "4444", Duration = new TimeSpan(1, 12, 89), IsIncoming = true },
-                new CallLog() { Phone = "5555", Duration = new TimeSpan(0, 0, 23), IsIncoming = false },
-                new CallLog() { Phone = "2222", Duration = new TimeSpan(0, 3, 19), IsIncoming = true },
-                new CallLog() { Phone = "3333", Duration = new TimeSpan(0, 0, 5), IsIncoming = false },
-                new CallLog() { Phone = "3333", Duration = new TimeSpan(0, 6, 19), IsIncoming = true },
-                new CallLog() { Phone = "2222", Duration = new TimeSpan(1, 1, 23), IsIncoming = true },
-                new CallLog() { Phone = "2222", Duration = new TimeSpan(1, 5, 24), IsIncoming = true }
-            };
-        }
-    }
-
     class Program
     {
         static void Main(string[] args)
@@ -129,18 +87,18 @@ namespace app_2
 
                 foreach (CallLog call in calls)
                 {
-                    if (callGroups.ContainsKey(call.Phone))
+                    if (callGroups.ContainsKey(call.Number))
                     {
-                        if (call.IsIncoming == true)
-                            callGroups[call.Phone].Add(call);
+                        if (call.Incoming == true)
+                            callGroups[call.Number].Add(call);
                     }
                     else
                     {
-                        if (call.IsIncoming == true)
+                        if (call.Incoming == true)
                         {
                             List<CallLog> list = new List<CallLog>();
                             list.Add(call);
-                            callGroups.Add(call.Phone, list);
+                            callGroups.Add(call.Number, list);
                         }
                     }
                 }
@@ -165,7 +123,7 @@ namespace app_2
                                 long sum = 0;
                                 foreach (CallLog call in calls_)
                                 {
-                                    sum += (long)call.Duration.TotalSeconds;
+                                    sum += (long)call.Duration;
                                 }
 
                                 double avg = (double)sum / (double)calls_.Count();
@@ -197,16 +155,16 @@ namespace app_2
                     new XComment("Summarized Incoming Call Stats"),
                     new XElement("contacts",
                         from call in calls
-                        where call.IsIncoming == true
-                        group call by call.Phone into g
+                        where call.Incoming == true
+                        group call by call.Number into g
                         join contact in contacts on
                             g.Key equals contact.Phone
                         orderby contact.LastName
                         select new XElement("contact",
                             new XElement("lastName", contact.LastName),
                             new XElement("count", g.Count()),
-                            new XElement("totalDuration", g.Sum(c => c.Duration.TotalSeconds)),
-                            new XElement("averageDuration", g.Average(c => c.Duration.TotalSeconds))
+                            new XElement("totalDuration", g.Sum(c => c.Duration)),
+                            new XElement("averageDuration", g.Average(c => c.Duration))
                         )
                     )
                 );
