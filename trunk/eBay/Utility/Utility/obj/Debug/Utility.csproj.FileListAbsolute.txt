@@ -1,0 +1,8 @@
+C:\Labs\eBay\Utility\Utility\bin\Debug\Utility.dll.config
+C:\Labs\eBay\Utility\Utility\bin\Debug\Utility.dll
+C:\Labs\eBay\Utility\Utility\bin\Debug\Utility.pdb
+C:\Labs\eBay\Utility\Utility\obj\Debug\Utility.csprojResolveAssemblyReference.cache
+C:\Labs\eBay\Utility\Utility\obj\Debug\Utility.dll
+C:\Labs\eBay\Utility\Utility\obj\Debug\Utility.pdb
+C:\Labs\eBay\Utility\Utility\bin\Debug\eBay.Service.dll
+C:\Labs\eBay\Utility\Utility\bin\Debug\eBay.Service.xml
