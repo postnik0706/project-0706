@@ -10,6 +10,18 @@ using eBay.Service.Core.Soap;
 
 namespace Utility
 {
+    public class Item
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public decimal Price { get; set; }
+        public string Category { get; set; }
+
+        public string UPC { get; set; }
+
+        public string ISBN { get; set; }
+    }
+
     public class eBay
     {
         public static void AddLogInfo(string Info)
@@ -17,20 +29,38 @@ namespace Utility
             Debug.WriteLine(
                 String.Format("{0}:\t{1}", DateTime.Now.ToString(), Info));
         }
-        
-        public static ItemType BuildItem()
+
+        public static Item[] BuildItems()
+        {
+            return new Item[] {
+                new Item() { Title = "The Affair by Lee Child",
+                    Description = "Novell by Lee Child",
+                    Price = 5.89M,
+                    Category = "267",
+                    ISBN = "9780440246305"
+                },
+                new Item() { Title = "Gadget G200",
+                    Description = "Another test gadget",
+                    Price = 15.99M,
+                    Category = "139973",
+                    UPC = "094634957724"
+                }
+            };
+        }
+
+        public static ItemType BuildItem(Item AItem)
         {
             ItemType item = new ItemType();
 
             // Title
-            item.Title = "Gadget G100";
-            item.Description = "My test gadget";
+            item.Title = AItem.Title;
+            item.Description = AItem.Description;
 
             item.ListingType = ListingTypeCodeType.FixedPriceItem;
 
             // listing price
             item.Currency = CurrencyCodeType.USD;
-            item.StartPrice = new AmountType() { Value = 15.99, currencyID = CurrencyCodeType.USD };
+            item.StartPrice = new AmountType() { Value = (Double)AItem.Price, currencyID = CurrencyCodeType.USD };
 
             // listing duration
             item.ListingDuration = "Days_3";
@@ -39,8 +69,8 @@ namespace Utility
             item.Location = "Farmington";
             item.Country = CountryCodeType.US;
 
-            // listing category, games
-            item.PrimaryCategory = new CategoryType() { CategoryID = "139973" };
+            // listing category
+            item.PrimaryCategory = new CategoryType() { CategoryID = AItem.Category };  // books
 
             // item quantity
             item.Quantity = 200;
@@ -61,10 +91,15 @@ namespace Utility
 
             item.ProductListingDetails = new ProductListingDetailsType()
             {
-                UPC = "094634957724",
+                UPC = AItem.UPC,
+                ISBN = AItem.ISBN,
                 ProductDetailsURL = "http://alex.tenzee.com",
                 DetailsURL = "http://alex.tenzee.com"
             };
+
+            // Return policy
+            item.ReturnPolicy = new ReturnPolicyType();
+            item.ReturnPolicy.ReturnsAcceptedOption = "ReturnsAccepted";
 
             return item;
         }
@@ -92,6 +127,31 @@ namespace Utility
             return sd;
         }
 
+        private static void AddItem(ApiContext apiContext, ItemType item)
+        {
+            AddItemCall apiCall = new AddItemCall(apiContext);
+            AddLogInfo("Beginning to call eBay, please wait...");
+
+            try
+            {
+                FeeTypeCollection fees = apiCall.AddItem(item);
+                AddLogInfo("Completed the call");
+
+                AddLogInfo("The item was listed successfully");
+                AddLogInfo("*************** BEGINNING OF THE LIST");
+                foreach (FeeType i in fees)
+                {
+                    AddLogInfo(String.Format("{0} = {1}", i.Name, i.Fee.Value));
+                }
+                AddLogInfo("*************** END OF THE LIST");
+            }
+            catch (Exception e)
+            {
+                AddLogInfo(e.Message);
+                throw;
+            }
+        }
+
         public static void Run()
         {
             AddLogInfo(
@@ -106,7 +166,6 @@ namespace Utility
             apiContext.ApiCredential = apiCredential;
             apiContext.Site = global::eBay.Service.Core.Soap.SiteCodeType.US;
 
-
             /*******************************************
             Getting server time
             */
@@ -118,26 +177,29 @@ namespace Utility
                     String.Format("Official eBay time: {0}", officialTime));
             }
 
+            /*{
+                GetCategoriesCall apiCall = new GetCategoriesCall(apiContext);
+
+                apiCall.EnableCompression = true;
+
+                apiCall.DetailLevelList.Add(DetailLevelCodeType.ReturnAll);
+                apiCall.ViewAllNodes = true;
+
+                apiCall.LevelLimit = 4;
+
+                CategoryTypeCollection cats = apiCall.GetCategories();
+                foreach (CategoryType i in cats)
+                {
+                    AddLogInfo(String.Format("{0} = {1}", i.CategoryID, i.CategoryName));
+                }
+            }*/
+
+
             /*******************************************
             Adding an item
             */
-            ItemType item = BuildItem();
-
-            {
-                AddItemCall apiCall = new AddItemCall(apiContext);
-                AddLogInfo("Beginning to call eBay, please wait...");
-
-                FeeTypeCollection fees = apiCall.AddItem(item);
-                AddLogInfo("Completed the call");
-
-                AddLogInfo("The item was listed successfully");
-                AddLogInfo("*************** BEGINNING OF THE LIST");
-                foreach (FeeType i in fees)
-                {
-                    AddLogInfo(String.Format("{0} = {1}", i.Name, i.Fee.Value));
-                }
-                AddLogInfo("*************** END OF THE LIST");
-            }
+            AddItem(apiContext, BuildItem(BuildItems()[0]));
+            AddItem(apiContext, BuildItem(BuildItems()[1]));
         }
     }
 }
