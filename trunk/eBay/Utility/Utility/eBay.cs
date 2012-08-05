@@ -26,7 +26,7 @@ namespace Utility
             item.Title = "Gadget G100";
             item.Description = "My test gadget";
 
-            item.ListingType = ListingTypeCodeType.Chinese;
+            item.ListingType = ListingTypeCodeType.FixedPriceItem;
 
             // listing price
             item.Currency = CurrencyCodeType.USD;
@@ -43,7 +43,7 @@ namespace Utility
             item.PrimaryCategory = new CategoryType() { CategoryID = "139973" };
 
             // item quantity
-            item.Quantity = 1200;
+            item.Quantity = 200;
 
             // payment methods
             item.PaymentMethods = new BuyerPaymentMethodCodeTypeCollection(
@@ -61,7 +61,7 @@ namespace Utility
 
             item.ProductListingDetails = new ProductListingDetailsType()
             {
-                UPC = "0027541000085",      // water
+                UPC = "094634957724",
                 ProductDetailsURL = "http://alex.tenzee.com",
                 DetailsURL = "http://alex.tenzee.com"
             };
@@ -134,7 +134,7 @@ namespace Utility
                 AddLogInfo("*************** BEGINNING OF THE LIST");
                 foreach (FeeType i in fees)
                 {
-                    AddLogInfo(String.Format("{0} = {1}", i.Name, i.Fee));
+                    AddLogInfo(String.Format("{0} = {1}", i.Name, i.Fee.Value));
                 }
                 AddLogInfo("*************** END OF THE LIST");
             }
