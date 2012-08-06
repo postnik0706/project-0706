@@ -88,10 +88,10 @@ namespace Utility
             item.Country = CountryCodeType.US;
 
             // listing category
-            item.PrimaryCategory = new CategoryType() { CategoryID = AItem.Category };  // books
+            item.PrimaryCategory = new CategoryType() { CategoryID = AItem.Category };
 
             // item quantity
-            item.Quantity = 200;
+            item.Quantity = 300;
 
             // payment methods
             item.PaymentMethods = new BuyerPaymentMethodCodeTypeCollection(
@@ -170,7 +170,7 @@ namespace Utility
             }
         }
 
-        public static void GetSellerList(ApiContext apiContext)
+        public static ItemType[] GetSellerList(ApiContext apiContext)
         {
             GetSellerListCall apiCall = new GetSellerListCall(apiContext);
             apiCall.DetailLevelList.Add(DetailLevelCodeType.ReturnAll);
@@ -178,24 +178,68 @@ namespace Utility
             apiCall.EndTimeFrom = new DateTime(2012, 8, 1);
             apiCall.EndTimeTo = new DateTime(2012, 8, 20);
             ItemTypeCollection items = apiCall.GetSellerList();
+            
+            List<ItemType> result = new List<ItemType>();
             foreach (ItemType i in items)
             {
-                AddLogInfo(String.Format("{0}: {1}", i.ItemID, i.Description));
+                if (i.ListingType == ListingTypeCodeType.FixedPriceItem)
+                {
+                    result.Add(i);
+                    AddLogInfo(String.Format("{0}: {1}", i.ItemID, i.Description));
+                }
             }
+            return result.ToArray();
         }
         
-        public static void PlaceOffer(ApiContext apiContext)
+        public static void PlaceOffer(ApiContext apiContext, ItemType Item)
         {
             PlaceOfferCall apiCall = new PlaceOfferCall(apiContext);
             apiCall.Offer = new OfferType()
             {
                 Action = BidActionCodeType.Purchase,
                 Quantity = 1,
-                MaxBid = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 15.99 }
+                MaxBid = new AmountType() { currencyID = CurrencyCodeType.USD, Value = Item.StartPrice.Value }
             };
             apiCall.AbstractRequest.EndUserIP = "71.234.110.72";
-            apiCall.ItemID = "110101313260";
+            apiCall.ItemID = Item.ItemID;
             apiCall.Execute();
+            if (apiCall.HasError)
+            {
+                throw new Exception("Error in PlaceOffer");
+            }
+        }
+
+        public static void MarkAsPaymentReceived(ApiContext apiContext)
+        {
+            ReviseCheckoutStatusCall apiCall = new ReviseCheckoutStatusCall(apiContext);
+            //apiCall.ItemID = 
+        }
+        
+        public static void GetItemList(ApiContext apiContext)
+        {
+            GetSellerTransactionsCall apiCall = new GetSellerTransactionsCall(apiContext);
+
+            apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
+            apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = 1 };
+            
+            int page = 0;
+            do
+            {
+                apiCall.Execute();
+
+                AddLogInfo(String.Format("Getting item list - START, page {0}", page +  1));
+                TransactionTypeCollection items = apiCall.GetSellerTransactions(new TimeFilter() { TimeFrom = new DateTime(2012, 8, 1), TimeTo = new DateTime(2012, 8, 30) } );
+                AddLogInfo(String.Format("Getting item list - SUCCESS, page {0}", page + 1));
+            
+                foreach (TransactionType i in items)
+                {
+                    if ( (i.TransactionID == "26957116001") || (i.TransactionID == "26957117001") )
+                        AddLogInfo(String.Format("UserID: {0}\tTransactioNID: {1}\tBuyer Name: {2}", i.Buyer.UserID, i.TransactionID, i.Buyer.BuyerInfo.ShippingAddress.Name));
+                }
+                
+                page++;
+
+            } while (apiCall.PaginationResult.TotalNumberOfPages > page);
         }
 
         public static void Run()
@@ -216,35 +260,31 @@ namespace Utility
                     String.Format("Official eBay time: {0}", officialTime));
             }
 
-            /*{
-                GetCategoriesCall apiCall = new GetCategoriesCall(apiContext);
-
-                apiCall.EnableCompression = true;
-
-                apiCall.DetailLevelList.Add(DetailLevelCodeType.ReturnAll);
-                apiCall.ViewAllNodes = true;
-
-                apiCall.LevelLimit = 4;
-
-                CategoryTypeCollection cats = apiCall.GetCategories();
-                foreach (CategoryType i in cats)
-                {
-                    AddLogInfo(String.Format("{0} = {1}", i.CategoryID, i.CategoryName));
-                }
-            }*/
-
-
             /*******************************************
             Adding an item
             */
-            /*AddItem(apiContext, BuildItem(BuildItems()[0]));
-            AddItem(apiContext, BuildItem(BuildItems()[1]));
+            /*AddItem(apiCtxSeller, BuildItem(BuildItems()[0]));
+            AddItem(apiCtxSeller, BuildItem(BuildItems()[1]));*/
+            
+            
+            /*******************************************
+            Getting Seller list
             */
+            ItemType[] items = GetSellerList(apiCtxSeller);
 
-            GetSellerList(apiCtxSeller);
+            
+            /*******************************************
+            Placing offers
+            */
+            /*for (int i = 0; i < 200; i++)
+            {
+                AddLogInfo(String.Format("Buying cycle... {0} - START", i));
+                ApiContext apiCtxBuyer = GetContext(SellerOrBuyer.typeBUYER);
+                PlaceOffer(apiCtxBuyer, items[4]);
+                AddLogInfo(String.Format("Buying cycle... {0} - SUCCESS", i));
+            }*/
 
-            ApiContext apiCtxBuyer = GetContext(SellerOrBuyer.typeBUYER);
-            PlaceOffer(apiCtxBuyer);
+            GetItemList(apiCtxSeller);
         }
     }
 }
