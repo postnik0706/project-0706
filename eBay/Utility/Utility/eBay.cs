@@ -24,10 +24,28 @@ namespace Utility
 
     public class eBay
     {
+        public enum SellerOrBuyer
+        {
+            typeSELLER, typeBUYER
+        }
         public static void AddLogInfo(string Info)
         {
             Debug.WriteLine(
                 String.Format("{0}:\t{1}", DateTime.Now.ToString(), Info));
+        }
+
+        private static ApiContext GetContext(SellerOrBuyer Who)
+        {
+            ApiContext apiContext = new ApiContext();
+            apiContext.SoapApiServerUrl =
+                ConfigurationManager.AppSettings["Environment.ApiServerUrl"];
+            ApiCredential apiCredential = new ApiCredential();
+            apiCredential.eBayToken =
+                ConfigurationManager.AppSettings[
+                Who == SellerOrBuyer.typeSELLER ? "UserAccount.ApiToken_Seller" : "UserAccount.ApiToken_Buyer"];
+            apiContext.ApiCredential = apiCredential;
+            apiContext.Site = global::eBay.Service.Core.Soap.SiteCodeType.US;
+            return apiContext;
         }
 
         public static Item[] BuildItems()
@@ -152,25 +170,46 @@ namespace Utility
             }
         }
 
+        public static void GetSellerList(ApiContext apiContext)
+        {
+            GetSellerListCall apiCall = new GetSellerListCall(apiContext);
+            apiCall.DetailLevelList.Add(DetailLevelCodeType.ReturnAll);
+            apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = 1 };
+            apiCall.EndTimeFrom = new DateTime(2012, 8, 1);
+            apiCall.EndTimeTo = new DateTime(2012, 8, 20);
+            ItemTypeCollection items = apiCall.GetSellerList();
+            foreach (ItemType i in items)
+            {
+                AddLogInfo(String.Format("{0}: {1}", i.ItemID, i.Description));
+            }
+        }
+        
+        public static void PlaceOffer(ApiContext apiContext)
+        {
+            PlaceOfferCall apiCall = new PlaceOfferCall(apiContext);
+            apiCall.Offer = new OfferType()
+            {
+                Action = BidActionCodeType.Purchase,
+                Quantity = 1,
+                MaxBid = new AmountType() { currencyID = CurrencyCodeType.USD, Value = 15.99 }
+            };
+            apiCall.AbstractRequest.EndUserIP = "71.234.110.72";
+            apiCall.ItemID = "110101313260";
+            apiCall.Execute();
+        }
+
         public static void Run()
         {
             AddLogInfo(
                 String.Format("{0}:\tStarting...", DateTime.Now.ToString()));
 
-            ApiContext apiContext = new ApiContext();
-            apiContext.SoapApiServerUrl =
-                ConfigurationManager.AppSettings["Environment.ApiServerUrl"];
-            ApiCredential apiCredential = new ApiCredential();
-            apiCredential.eBayToken =
-                ConfigurationManager.AppSettings["UserAccount.ApiToken"];
-            apiContext.ApiCredential = apiCredential;
-            apiContext.Site = global::eBay.Service.Core.Soap.SiteCodeType.US;
+            ApiContext apiCtxSeller = GetContext(SellerOrBuyer.typeSELLER);
 
             /*******************************************
             Getting server time
             */
             {
-                GeteBayOfficialTimeCall apiCall = new GeteBayOfficialTimeCall(apiContext);
+                GeteBayOfficialTimeCall apiCall = new GeteBayOfficialTimeCall(apiCtxSeller);
                 DateTime officialTime = apiCall.GeteBayOfficialTime();
 
                 AddLogInfo(
@@ -198,8 +237,14 @@ namespace Utility
             /*******************************************
             Adding an item
             */
-            AddItem(apiContext, BuildItem(BuildItems()[0]));
+            /*AddItem(apiContext, BuildItem(BuildItems()[0]));
             AddItem(apiContext, BuildItem(BuildItems()[1]));
+            */
+
+            GetSellerList(apiCtxSeller);
+
+            ApiContext apiCtxBuyer = GetContext(SellerOrBuyer.typeBUYER);
+            PlaceOffer(apiCtxBuyer);
         }
     }
 }
