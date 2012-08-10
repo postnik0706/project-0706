@@ -32,10 +32,18 @@ namespace plural.practice
 
         private static void CreateSimpleXml()
         {
+            XNamespace ns = "http://www.tenzee.com";
+            XNamespace ext = "http://www.tenzee.com/Modules/Ext";
+            
             XDocument doc = new XDocument(
-                new XElement("Modules",
-                    new XElement("Module", "Introduction to LINQ"),
-                    new XElement("Module", "LINQ and C#")));
+                new XElement(ns + "Modules",
+                    new XAttribute(XNamespace.Xmlns + "ext", ext),
+                    new XElement(ns + "Module", "Introduction to LINQ"),
+                    new XElement(ns + "Module", "LINQ and C#"),
+                    new XElement(ext + "Extra", "Some Content"),
+                    new XElement(ext + "Extra", "Another")
+                    
+                    ));
             doc.Save("modules.xml");
         }
     }
