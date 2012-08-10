@@ -196,7 +196,7 @@ namespace app_3
             MyEvent.Invoke(null, 1234);
 
 
-            Console.WriteLine("----------------------------------------------------------");
+            Console.WriteLine("-------------------------------------------------- Condition");
             List<Contact> cont = Contact.SampleData();
 
             {
@@ -211,7 +211,7 @@ namespace app_3
                 }
             }
 
-            Console.WriteLine("----------------------------------------------------------");
+            Console.WriteLine("------------------------------------------ Grouping");
 
             {
                 var q = from c in cont
@@ -226,6 +226,28 @@ namespace app_3
                     }
                 }
             }
+            Console.WriteLine("------------------------------------------------- Join");
+
+            {
+                List<Contact> contacts = Contact.SampleData();
+                List<CallLog> calls = CallLog.SampleData();
+
+                var q = from call in calls
+                        join contact in contacts on call.Number equals contact.Phone
+                        select new
+                        {
+                            contact.FirstName,
+                            contact.LastName,
+                            call.When,
+                            call.Duration
+                        };
+                foreach (var item in q)
+                {
+                    Console.WriteLine("{0} - {1} {2} ({3} min)",
+                        item.When.ToString("ddMMM HH:m"), item.FirstName, item.LastName, item.Duration);
+                }
+            }
+
             Console.WriteLine("----------------------------------------------------------");
         }
 
