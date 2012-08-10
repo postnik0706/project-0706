@@ -1,5 +1,0 @@
-C:\Labs\LINQ\app_2\app_2\obj\x86\Debug\app_2.csprojResolveAssemblyReference.cache
-C:\Labs\LINQ\app_2\app_2\bin\Debug\app_2.exe
-C:\Labs\LINQ\app_2\app_2\bin\Debug\app_2.pdb
-C:\Labs\LINQ\app_2\app_2\obj\x86\Debug\app_2.exe
-C:\Labs\LINQ\app_2\app_2\obj\x86\Debug\app_2.pdb
