@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="72de6758-b699-4e59-9876-e9501ea91b18" name="Alex@ALEX-PC 2011-10-24 22:26:26" runUser="Alex-PC\Alex" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="0aa6c54b-8328-4f20-b370-e7633e6dd51a">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="Alex_ALEX-PC 2011-10-24 22_26_26">
+      <DeploymentItem filename="C:\Labs\linq\app_1\app_1\bin\Debug\app_1.exe" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2011-10-24T22:26:26.6104222-07:00" queuing="2011-10-24T22:26:26.6514245-07:00" start="2011-10-24T22:26:26.6664254-07:00" finish="2011-10-24T22:26:26.9054390-07:00" />
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="GetAlphabet_checks" storage="c:\labs\linq\app_1\testproject1\bin\debug\testproject1.dll" id="097c0851-1b91-b616-ba01-ae04a560a175">
+      <Execution id="32bd946b-0d8c-4852-8d28-04c6aad3df44" />
+      <TestMethod codeBase="C:/Labs/linq/app_1/TestProject1/bin/Debug/TestProject1.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="TestProject1.UnitTest1, TestProject1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="GetAlphabet_checks" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="097c0851-1b91-b616-ba01-ae04a560a175" executionId="32bd946b-0d8c-4852-8d28-04c6aad3df44" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="32bd946b-0d8c-4852-8d28-04c6aad3df44" testId="097c0851-1b91-b616-ba01-ae04a560a175" testName="GetAlphabet_checks" computerName="ALEX-PC" duration="00:00:00.0128847" startTime="2011-10-24T22:26:26.6784261-07:00" endTime="2011-10-24T22:26:26.8904382-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="32bd946b-0d8c-4852-8d28-04c6aad3df44">
+    </UnitTestResult>
+  </Results>
+</TestRun>

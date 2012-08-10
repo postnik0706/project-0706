@@ -1,0 +1,14 @@
+C:\Labs\LINQ\games.reference\app_1\bin\Debug\app_1.exe
+C:\Labs\LINQ\games.reference\app_1\bin\Debug\app_1.pdb
+C:\Labs\LINQ\games.reference\app_1\bin\Debug\HtmlAgilityPack.pdb
+C:\Labs\LINQ\games.reference\app_1\bin\Debug\HtmlAgilityPack.xml
+C:\Labs\LINQ\games.reference\app_1\obj\x86\Debug\client.csprojResolveAssemblyReference.cache
+C:\Labs\LINQ\games.reference\app_1\obj\x86\Debug\app_1.exe
+C:\Labs\LINQ\games.reference\app_1\obj\x86\Debug\app_1.pdb
+C:\Labs\LINQ\games.reference\client\bin\Debug\games.reference.exe
+C:\Labs\LINQ\games.reference\client\bin\Debug\games.reference.pdb
+C:\Labs\LINQ\games.reference\client\bin\Debug\HtmlAgilityPack.pdb
+C:\Labs\LINQ\games.reference\client\bin\Debug\HtmlAgilityPack.xml
+C:\Labs\LINQ\games.reference\client\obj\x86\Debug\client.csprojResolveAssemblyReference.cache
+C:\Labs\LINQ\games.reference\client\obj\x86\Debug\games.reference.exe
+C:\Labs\LINQ\games.reference\client\obj\x86\Debug\games.reference.pdb
