@@ -16,18 +16,16 @@ namespace plural.practice
 
         private static void ReadSimpleXml()
         {
+            XNamespace ns = "http://www.tenzee.com";
             XDocument doc = XDocument.Load("modules.xml");
 
-            XElement root = doc.Root;
-
-            var elements = root.Descendants();
+            var elements = 
+                doc.Descendants(ns + "Module");
 
             foreach (var element in elements)
-            {
-                string value = element.Value;
-
-                string length = (string)element.Attribute("Length");
-            }
+	        {
+                string value = (string)element;
+	        }
         }
 
         private static void CreateSimpleXml()
