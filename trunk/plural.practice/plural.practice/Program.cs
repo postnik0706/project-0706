@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace plural.practice
 {
@@ -9,6 +10,11 @@ namespace plural.practice
     {
         static void Main(string[] args)
         {
+            XDocument doc = new XDocument(
+                new XElement("Modules",
+                    new XElement("Module", "Introduction to LINQ"),
+                    new XElement("Module", "LINQ and C#")));
+            doc.Save("modules.xml");
         }
     }
 }
