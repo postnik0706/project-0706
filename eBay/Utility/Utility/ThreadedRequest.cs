@@ -31,8 +31,8 @@ namespace Utility
             Log.AddLogInfo("Requesting Page 0");
             
             
-            processorCount = Environment.ProcessorCount;
-            //processorCount = 1;
+            //processorCount = Environment.ProcessorCount;
+            processorCount = 1;
 
             pages.Add(Factory.CreatePageObject(ApiContext, 1));             // Page 1 will return the number of pages
             pages[0].Execute();
