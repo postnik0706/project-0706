@@ -7,6 +7,7 @@ using eBay.Service.Core.Sdk;
 using eBay.Service.Call;
 using System.Configuration;
 using eBay.Service.Core.Soap;
+using System.Threading;
 
 namespace Utility
 {
@@ -22,16 +23,20 @@ namespace Utility
         public string ISBN { get; set; }
     }
 
+    public static class Log
+    {
+        public static void AddLogInfo(string Info)
+        {
+            Debug.WriteLine(
+                String.Format("{0}:\t{1}", DateTime.Now.ToString(), Info));
+        }
+    }
+
     public class eBay
     {
         public enum SellerOrBuyer
         {
             typeSELLER, typeBUYER
-        }
-        public static void AddLogInfo(string Info)
-        {
-            Debug.WriteLine(
-                String.Format("{0}:\t{1}", DateTime.Now.ToString(), Info));
         }
 
         private static ApiContext GetContext(SellerOrBuyer Who)
@@ -148,24 +153,24 @@ namespace Utility
         private static void AddItem(ApiContext apiContext, ItemType item)
         {
             AddItemCall apiCall = new AddItemCall(apiContext);
-            AddLogInfo("Beginning to call eBay, please wait...");
+            Log.AddLogInfo("Beginning to call eBay, please wait...");
 
             try
             {
                 FeeTypeCollection fees = apiCall.AddItem(item);
-                AddLogInfo("Completed the call");
+                Log.AddLogInfo("Completed the call");
 
-                AddLogInfo("The item was listed successfully");
-                AddLogInfo("*************** BEGINNING OF THE LIST");
+                Log.AddLogInfo("The item was listed successfully");
+                Log.AddLogInfo("*************** BEGINNING OF THE LIST");
                 foreach (FeeType i in fees)
                 {
-                    AddLogInfo(String.Format("{0} = {1}", i.Name, i.Fee.Value));
+                    Log.AddLogInfo(String.Format("{0} = {1}", i.Name, i.Fee.Value));
                 }
-                AddLogInfo("*************** END OF THE LIST");
+                Log.AddLogInfo("*************** END OF THE LIST");
             }
             catch (Exception e)
             {
-                AddLogInfo(e.Message);
+                Log.AddLogInfo(e.Message);
                 throw;
             }
         }
@@ -185,7 +190,7 @@ namespace Utility
                 if (i.ListingType == ListingTypeCodeType.FixedPriceItem)
                 {
                     result.Add(i);
-                    AddLogInfo(String.Format("{0}: {1}", i.ItemID, i.Description));
+                    Log.AddLogInfo(String.Format("{0}: {1}", i.ItemID, i.Description));
                 }
             }
             return result.ToArray();
@@ -214,37 +219,39 @@ namespace Utility
             ReviseCheckoutStatusCall apiCall = new ReviseCheckoutStatusCall(apiContext);
             //apiCall.ItemID = 
         }
-        
-        public static void GetItemList(ApiContext apiContext)
+
+        public static int GetItemList(ApiContext apiContext, int Page)
         {
             GetSellerTransactionsCall apiCall = new GetSellerTransactionsCall(apiContext);
-
             apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
+            apiCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "TransactionID", "PaginationResult", "TransactionArray.Transaction.Buyer.UserID", "TransactionArray.Transaction.Item.Title" });
             apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = 1 };
-            
-            int page = 0;
-            do
+
+            apiCall.Execute();
+            Log.AddLogInfo(String.Format("Getting item list - START, page {0}", 1));
+            TransactionTypeCollection items = apiCall.GetSellerTransactions(new TimeFilter() { TimeFrom = new DateTime(2012, 8, 1), TimeTo = new DateTime(2012, 8, 30) });
+            Log.AddLogInfo(String.Format("Getting item list - SUCCESS, page {0}", 1));
+
+            foreach (TransactionType i in items)
             {
-                apiCall.Execute();
+                //Log.AddLogInfo(String.Format("UserID: {0}\tTransactioNID: {1}\tBuyer Name: {2}", i.Buyer.UserID, i.TransactionID, i.Buyer.BuyerInfo.ShippingAddress.Name));
+                Log.AddLogInfo(String.Format("{0} {1} {2}", i.TransactionID, i.Buyer.UserID, i.Item.Title));
+            }
+            return apiCall.PaginationResult.TotalNumberOfPages;
+        }
 
-                AddLogInfo(String.Format("Getting item list - START, page {0}", page +  1));
-                TransactionTypeCollection items = apiCall.GetSellerTransactions(new TimeFilter() { TimeFrom = new DateTime(2012, 8, 1), TimeTo = new DateTime(2012, 8, 30) } );
-                AddLogInfo(String.Format("Getting item list - SUCCESS, page {0}", page + 1));
-            
-                foreach (TransactionType i in items)
-                {
-                    if ( (i.TransactionID == "26957116001") || (i.TransactionID == "26957117001") )
-                        AddLogInfo(String.Format("UserID: {0}\tTransactioNID: {1}\tBuyer Name: {2}", i.Buyer.UserID, i.TransactionID, i.Buyer.BuyerInfo.ShippingAddress.Name));
-                }
-                
-                page++;
-
-            } while (apiCall.PaginationResult.TotalNumberOfPages > page);
+        public static void GetItemList(ApiContext apiContext)
+        {
+            ThreadedRequest req = new ThreadedRequest(apiContext, new EBayPageObjectFactory());
+            foreach (EBayPageProducer item in req.Pages)
+            {
+                Log.AddLogInfo(item.ToString());
+            }
         }
 
         public static void Run()
         {
-            AddLogInfo(
+            Log.AddLogInfo(
                 String.Format("{0}:\tStarting...", DateTime.Now.ToString()));
 
             ApiContext apiCtxSeller = GetContext(SellerOrBuyer.typeSELLER);
@@ -252,13 +259,13 @@ namespace Utility
             /*******************************************
             Getting server time
             */
-            {
+            /*{
                 GeteBayOfficialTimeCall apiCall = new GeteBayOfficialTimeCall(apiCtxSeller);
                 DateTime officialTime = apiCall.GeteBayOfficialTime();
 
-                AddLogInfo(
+                Log.AddLogInfo(
                     String.Format("Official eBay time: {0}", officialTime));
-            }
+            }*/
 
             /*******************************************
             Adding an item
@@ -270,7 +277,7 @@ namespace Utility
             /*******************************************
             Getting Seller list
             */
-            ItemType[] items = GetSellerList(apiCtxSeller);
+            //ItemType[] items = GetSellerList(apiCtxSeller);
 
             
             /*******************************************
@@ -278,10 +285,10 @@ namespace Utility
             */
             /*for (int i = 0; i < 200; i++)
             {
-                AddLogInfo(String.Format("Buying cycle... {0} - START", i));
+                Log.AddLogInfo(String.Format("Buying cycle... {0} - START", i));
                 ApiContext apiCtxBuyer = GetContext(SellerOrBuyer.typeBUYER);
                 PlaceOffer(apiCtxBuyer, items[4]);
-                AddLogInfo(String.Format("Buying cycle... {0} - SUCCESS", i));
+                Log.AddLogInfo(String.Format("Buying cycle... {0} - SUCCESS", i));
             }*/
 
             GetItemList(apiCtxSeller);
