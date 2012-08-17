@@ -27,11 +27,13 @@ namespace Utility
         {
             string rs = String.Empty;
             if (transactionCollection != null)
+            {
                 foreach (TransactionType i in transactionCollection)
                 {
                     //rs += String.Format("UserID: {0}\tTransactioNID: {1}\tBuyer Name: {2}", i.Buyer.UserID, i.TransactionID, i.Buyer.BuyerInfo.ShippingAddress.Name));
                     rs += String.Format("{0} {1} {2}", i.TransactionID, i.Buyer.UserID, i.Item.Title);
                 }
+            }
             return rs;
         }
 
@@ -71,7 +73,7 @@ namespace Utility
     public class EBayPageProducerEx : PageProducer
     {
         const int intENTRIES_PER_PAGE = 200;
-        private TransactionTypeCollection transactionCollection;
+        private OrderTypeCollection orderCollection;
         private int numberOfPages;
         private int pageNumber;
         GetOrdersCall apiCall;
@@ -79,12 +81,14 @@ namespace Utility
         public override string ToString()
         {
             string rs = String.Empty;
-            if (transactionCollection != null)
-                foreach (TransactionType i in transactionCollection)
+            if (orderCollection != null)
+            {
+                foreach (TransactionType i in orderCollection)
                 {
                     //rs += String.Format("UserID: {0}\tTransactioNID: {1}\tBuyer Name: {2}", i.Buyer.UserID, i.TransactionID, i.Buyer.BuyerInfo.ShippingAddress.Name));
                     rs += String.Format("{0} {1} {2}", i.TransactionID, i.Buyer.UserID, i.Item.Title);
                 }
+            }
             return rs;
         }
 
@@ -114,7 +118,7 @@ namespace Utility
             Log.AddLogInfo(String.Format("Thread {0} started, page {1}", Thread.CurrentThread.ManagedThreadId, pageNumber));
             apiCall.Execute();
             Log.AddLogInfo(String.Format("Getting item list - START, page {0}", pageNumber));
-            transactionCollection = apiCall.GetOrders(
+            orderCollection = apiCall.GetOrders(
                 new TimeFilter() { TimeFrom = new DateTime(2012, 8, 1), TimeTo = new DateTime(2012, 8, 30) },
                 TradingRoleCodeType.Buyer,
                 OrderStatusCodeType.Active);

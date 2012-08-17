@@ -225,17 +225,83 @@ namespace Utility
             GetSellerTransactionsCall apiCall = new GetSellerTransactionsCall(apiContext);
             apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
             apiCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "TransactionID", "PaginationResult", "TransactionArray.Transaction.Buyer.UserID", "TransactionArray.Transaction.Item.Title" });
-            apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = 1 };
+            apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = Page };
 
             apiCall.Execute();
             Log.AddLogInfo(String.Format("Getting item list - START, page {0}", 1));
-            TransactionTypeCollection items = apiCall.GetSellerTransactions(new TimeFilter() { TimeFrom = new DateTime(2012, 8, 1), TimeTo = new DateTime(2012, 8, 30) });
+            TransactionTypeCollection items = apiCall.GetSellerTransactions(new TimeFilter() { TimeFrom = new DateTime(2012, 8, 15, 12, 00, 0), TimeTo = new DateTime(2012, 8, 15, 13, 36, 59) });
             Log.AddLogInfo(String.Format("Getting item list - SUCCESS, page {0}", 1));
 
             foreach (TransactionType i in items)
             {
                 //Log.AddLogInfo(String.Format("UserID: {0}\tTransactioNID: {1}\tBuyer Name: {2}", i.Buyer.UserID, i.TransactionID, i.Buyer.BuyerInfo.ShippingAddress.Name));
-                Log.AddLogInfo(String.Format("{0} {1} {2}", i.TransactionID, i.Buyer.UserID, i.Item.Title));
+                Log.AddLogInfo(String.Format("TransactionID {0}\tBuyer Name{1}\tItem Title{2}",
+                    i.TransactionID, i.Buyer.UserID, i.Item.Title));
+            }
+            return apiCall.PaginationResult.TotalNumberOfPages;
+        }
+
+        // https://developer.ebay.com/DevZone/build-test/test-tool/default.aspx
+        
+        public void CreateToken(string sUserID)
+        {
+            AuthenticationEntryType oAuthEntryType = new AuthenticationEntryType();
+            oAuthEntryType.TokenReturnMethod = TokenReturnMethodCodeType.FetchToken;
+            SetReturnURLCall oSetReturnURLCall = new SetReturnURLCall(SDKApiContext);
+            if (bUseeBayTestSite)
+                m_oApiContext.SignInUrl = EBAYSIGNURL_USERID_SANDBOX + sUserID + "&runame=" + RUNAME + "&sid=" + SID;
+            else
+                m_oApiContext.SignInUrl = EBAYSIGNURL_USERID + sUserID + "&runame=" + RUNAME + "&sid=" + SID;
+            m_oApiContext.Version = VERSION;
+            oSetReturnURLCall.AuthenticationEntry = oAuthEntryType;
+            System.Diagnostics.Process.Start(m_oApiContext.SignInUrl); 
+        }
+
+
+        public string GetTokenFromeBay(string userID)
+        {
+            string token = string.Empty; 
+            try
+            {
+                FetchTokenCall oFetchTokenCall = new FetchTokenCall(SDKApiContext);
+                oFetchTokenCall.SecretID = SID;
+                oFetchTokenCall.UserID = userID;
+                oFetchTokenCall.CallRetry = _CreateAndInitCallRetryObject();
+                oFetchTokenCall.EnableCompression = ENABLECOMPRESS;
+                token = oFetchTokenCall.FetchToken(SID);
+            }
+            catch
+            {
+                throw;
+            }
+            return token;
+        }
+
+        public static int GetItemList_GetOrders(ApiContext apiContext, int Page)
+        {
+            GetOrdersCall apiCall = new GetOrdersCall(apiContext);
+            apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
+            //apiCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "TransactionID", "PaginationResult", "TransactionArray.Transaction.Buyer.UserID", "TransactionArray.Transaction.Item.Title" });
+            apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = Page };
+
+            apiCall.Execute();
+            Log.AddLogInfo(String.Format("Getting item list - START, page {0}", 1));
+
+            GeteBayOfficialTimeCall timeCall = new GeteBayOfficialTimeCall(apiContext);
+            TimeSpan timeDiff = DateTime.Now - timeCall.GeteBayOfficialTime();
+            
+            TimeFilter createTime = new TimeFilter() {
+                TimeFrom = new DateTime(2012, 8, 15, 12, 00, 0).Subtract(timeDiff), 
+                TimeTo = new DateTime(2012, 8, 15, 13, 36, 59).Subtract(timeDiff) };
+            OrderTypeCollection items = apiCall.GetOrders(createTime,
+                TradingRoleCodeType.Seller, OrderStatusCodeType.Active);
+            Log.AddLogInfo(String.Format("Getting item list - SUCCESS, page {0}", 1));
+
+            foreach (OrderType i in items)
+            {
+                //Log.AddLogInfo(String.Format("UserID: {0}\tTransactioNID: {1}\tBuyer Name: {2}", i.Buyer.UserID, i.TransactionID, i.Buyer.BuyerInfo.ShippingAddress.Name));
+                Log.AddLogInfo(String.Format("TransactionID {0}\tBuyer Name{1}\tCreated on {2}",
+                    i.OrderID, i.BuyerUserID, i.CreatedTime));
             }
             return apiCall.PaginationResult.TotalNumberOfPages;
         }
@@ -277,7 +343,7 @@ namespace Utility
             /*******************************************
             Getting Seller list
             */
-            //ItemType[] items = GetSellerList(apiCtxSeller);
+            ItemType[] items = GetSellerList(apiCtxSeller);
 
             
             /*******************************************
@@ -291,7 +357,7 @@ namespace Utility
                 Log.AddLogInfo(String.Format("Buying cycle... {0} - SUCCESS", i));
             }*/
 
-            GetItemList(apiCtxSeller);
+            GetItemList_GetOrders(apiCtxSeller, 1);
         }
     }
 }
