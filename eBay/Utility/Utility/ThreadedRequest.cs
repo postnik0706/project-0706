@@ -28,18 +28,18 @@ namespace Utility
 
         public ThreadedRequest(ApiContext ApiContext, PageObjectFactory Factory)
         {
-            Log.AddLogInfo("Requesting Page 0");
+            ApiContext.ApiLogManager.RecordMessage("Requesting Page 0");
             
             
             processorCount = Environment.ProcessorCount;
             //processorCount = 1;
 
             pages.Add(Factory.CreatePageObject(ApiContext, 1));             // Page 1 will return the number of pages
-            pages[0].Execute();
+            pages[0].Execute(ApiContext);
 
             if (pages[0].NumPages > 1)
             {
-                Log.AddLogInfo(String.Format("Number of pages: {0}", pages[0].NumPages));
+                ApiContext.ApiLogManager.RecordMessage(String.Format("Number of pages: {0}", pages[0].NumPages));
                 for (int i = 2; i <= pages[0].NumPages; i++)
                     pages.Add(Factory.CreatePageObject(ApiContext, i));
 
@@ -55,22 +55,22 @@ namespace Utility
                         if (page >= pages[0].NumPages)
                             break;
 
-                        Log.AddLogInfo(String.Format("Moved on to page {0}", page));
+                        ApiContext.ApiLogManager.RecordMessage(String.Format("Moved on to page {0}", page));
                         if (processorCount > 1)
                         {
                             threads.Add(new Thread(pages[page].Execute));
-                            Log.AddLogInfo(String.Format("Created thread {0}", threads[threads.Count - 1].ManagedThreadId));
-                            threads[i].Start();
+                            ApiContext.ApiLogManager.RecordMessage(String.Format("Created thread {0}", threads[threads.Count - 1].ManagedThreadId));
+                            threads[i].Start((object)apiContext);
                         }
                         else
                         {
-                            pages[page].Execute();
-                            Log.AddLogInfo(String.Format("Run page {0}", page));
+                            pages[page].Execute(apiContext);
+                            ApiContext.ApiLogManager.RecordMessage(String.Format("Run page {0}", page));
                         }
                         page++;
                     }
 
-                    Log.AddLogInfo("Entering Join");
+                    ApiContext.ApiLogManager.RecordMessage("Entering Join");
 
                     if (processorCount > 1)
                     {
@@ -78,12 +78,12 @@ namespace Utility
                         {
                             foreach (var t in threads)
                                 t.Join();
-                            Log.AddLogInfo("Join quit");
+                            ApiContext.ApiLogManager.RecordMessage("Join quit");
                             threads.Clear();
                         }
                         catch (Exception e)
                         {
-                            Log.AddLogInfo(String.Format("Exception while joining: {0}", e.Message));
+                            ApiContext.ApiLogManager.RecordMessage(String.Format("Exception while joining: {0}", e.Message));
                             throw;
                         }
                     }
