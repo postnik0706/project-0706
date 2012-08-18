@@ -33,7 +33,7 @@ namespace Utility.Test
             return output;
         }
 
-        public override void Execute()
+        public override void Execute(Object obj)
         {
             output = "Page " + pageNumber.ToString();
         }
@@ -55,7 +55,7 @@ namespace Utility.Test
         [TestMethod]
         public void TestMethod1()
         {
-            Utility.eBay.Run();
+            Utility.eBayClass.Run();
             //ThreadedRequest r = new ThreadedRequest(null, new TestPageObjectFactory());
             //Console.WriteLine(r.Pages.Count);
         }

@@ -11,7 +11,7 @@ namespace Utility
 {
     public abstract class PageProducer
     {
-        public abstract void Execute();
+        public abstract void Execute(Object obj);
         public abstract int NumPages { get; }
     }
 
@@ -58,15 +58,16 @@ namespace Utility
             apiCall.Pagination = new PaginationType() { EntriesPerPage = intENTRIES_PER_PAGE, PageNumber = PageNumber };
         }
 
-        public override void Execute()
+        public override void Execute(Object obj)
         {
-            Log.AddLogInfo(String.Format("Thread {0} started, page {1}", Thread.CurrentThread.ManagedThreadId, pageNumber));
+            ApiContext apiContext = (ApiContext)obj;
+            apiContext.ApiLogManager.RecordMessage(String.Format("Thread {0} started, page {1}", Thread.CurrentThread.ManagedThreadId, pageNumber));
             apiCall.Execute();
-            Log.AddLogInfo(String.Format("Getting item list - START, page {0}", pageNumber));
+            apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - START, page {0}", pageNumber));
             transactionCollection = apiCall.GetSellerTransactions(new TimeFilter() { TimeFrom = new DateTime(2012, 8, 1), TimeTo = new DateTime(2012, 8, 30) });
             numberOfPages = apiCall.PaginationResult.TotalNumberOfPages;
-            Log.AddLogInfo(String.Format("Getting item list - SUCCESS, page {0}", pageNumber));
-            Log.AddLogInfo(String.Format("Thread {0} done, page {1}", Thread.CurrentThread.ManagedThreadId, pageNumber));
+            apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", pageNumber));
+            apiContext.ApiLogManager.RecordMessage(String.Format("Thread {0} done, page {1}", Thread.CurrentThread.ManagedThreadId, pageNumber));
         }
     }
 
@@ -113,18 +114,19 @@ namespace Utility
             apiCall.Pagination = new PaginationType() { EntriesPerPage = intENTRIES_PER_PAGE, PageNumber = PageNumber };
         }
 
-        public override void Execute()
+        public override void Execute(Object obj)
         {
-            Log.AddLogInfo(String.Format("Thread {0} started, page {1}", Thread.CurrentThread.ManagedThreadId, pageNumber));
+            ApiContext apiContext = (ApiContext)obj;
+            apiContext.ApiLogManager.RecordMessage(String.Format("Thread {0} started, page {1}", Thread.CurrentThread.ManagedThreadId, pageNumber));
             apiCall.Execute();
-            Log.AddLogInfo(String.Format("Getting item list - START, page {0}", pageNumber));
+            apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - START, page {0}", pageNumber));
             orderCollection = apiCall.GetOrders(
                 new TimeFilter() { TimeFrom = new DateTime(2012, 8, 1), TimeTo = new DateTime(2012, 8, 30) },
                 TradingRoleCodeType.Buyer,
                 OrderStatusCodeType.Active);
             numberOfPages = apiCall.PaginationResult.TotalNumberOfPages;
-            Log.AddLogInfo(String.Format("Getting item list - SUCCESS, page {0}", pageNumber));
-            Log.AddLogInfo(String.Format("Thread {0} done, page {1}", Thread.CurrentThread.ManagedThreadId, pageNumber));
+            apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", pageNumber));
+            apiContext.ApiLogManager.RecordMessage(String.Format("Thread {0} done, page {1}", Thread.CurrentThread.ManagedThreadId, pageNumber));
         }
     }
 }
