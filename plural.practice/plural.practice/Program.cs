@@ -135,6 +135,9 @@ namespace plural.practice
 
         static void Main(string[] args)
         {
+            Console.WriteLine("Press any key to start");
+            Console.ReadLine();
+            
             //CreateSimpleXml();
             //ReadSimpleXml();
             //CreateTypeInfo();
@@ -145,7 +148,12 @@ namespace plural.practice
             //ShowDbProviders();
 
             MovieReviews db = new MovieReviews();
-            db.Database.CreateIfNotExists();
+            //db.Database.CreateIfNotExists();
+
+            Movie m = new Movie() { ID = 0, ReleaseDate = DateTime.Now, Title = "I, Robot" };
+            db.Movies.Add(m);
+            db.SaveChanges();
+
             Console.WriteLine("** DONE");
 
             Console.ReadLine();

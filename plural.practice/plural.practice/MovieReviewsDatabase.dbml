@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="MovieReviews" Class="MovieReviewsDatabaseDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.Movies" Member="Movie_s">
+    <Type Name="Movie_">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Title" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ReleaseDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Movy_Review" Member="Review_s" ThisKey="ID" OtherKey="Movie_ID" Type="Review_" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Reviews" Member="Review_s">
+    <Type Name="Review_">
+      <Column Name="ReviewID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Summary" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Rating" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Body" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Reviewer" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="Movie_ID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Movy_Review" Member="Movie_" ThisKey="Movie_ID" OtherKey="ID" Type="Movie_" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
