@@ -121,6 +121,18 @@ namespace plural.practice
             }
         }
 
+        private static void ShowDbProviders()
+        {
+            foreach (System.Data.DataRow i in System.Data.Common.DbProviderFactories.GetFactoryClasses().Rows)
+            {
+                Console.WriteLine("---------------- Row");
+                foreach (System.Data.DataColumn j in i.Table.Columns)
+                {
+                    Console.WriteLine(String.Format("Name {0} = {1}", j.ColumnName, i[j]));
+                }
+            }
+        }
+
         static void Main(string[] args)
         {
             //CreateSimpleXml();
@@ -128,7 +140,13 @@ namespace plural.practice
             //CreateTypeInfo();
             //QueryEmployees();
             //QueryTypes();
-            QueryXml();
+            //QueryXml();
+
+            //ShowDbProviders();
+
+            MovieReviews db = new MovieReviews();
+            db.Database.CreateIfNotExists();
+            Console.WriteLine("** DONE");
 
             Console.ReadLine();
         }
