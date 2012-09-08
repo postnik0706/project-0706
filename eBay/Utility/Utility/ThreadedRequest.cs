@@ -11,7 +11,7 @@ namespace Utility
     {
         private List<PageProducer> pages = new List<PageProducer>();
         private List<Thread> threads;
-        private ApiContext apiContext;
+        //private ApiContext apiContext;
         private int processorCount;
 
         public List<PageProducer> Pages
@@ -34,7 +34,7 @@ namespace Utility
             processorCount = Environment.ProcessorCount;
             //processorCount = 1;
 
-            pages.Add(Factory.CreatePageObject(ApiContext, 1));             // Page 1 will return the number of pages
+            /*pages.Add(Factory.CreatePageObject(ApiContext, 1));             // Page 1 will return the number of pages
             pages[0].Execute(ApiContext);
 
             if (pages[0].NumPages > 1)
@@ -88,7 +88,7 @@ namespace Utility
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 }
