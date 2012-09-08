@@ -199,8 +199,8 @@ namespace Utility
             GetSellerListCall apiCall = new GetSellerListCall(apiContext);
             apiCall.DetailLevelList.Add(DetailLevelCodeType.ReturnAll);
             apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = 1 };
-            apiCall.EndTimeFrom = new DateTime(2012, 8, 1);
-            apiCall.EndTimeTo = new DateTime(2012, 8, 20);
+            apiCall.EndTimeFrom = new DateTime(2012, 9, 1);
+            apiCall.EndTimeTo = new DateTime(2012, 9, 20);
             ItemTypeCollection items = apiCall.GetSellerList();
             
             List<ItemType> result = new List<ItemType>();
@@ -215,17 +215,17 @@ namespace Utility
             return result.ToArray();
         }
         
-        public static void PlaceOffer(ApiContext apiContext, ItemType Item)
+        public static void PlaceOffer(ApiContext apiContext, string ItemID, double AValue)
         {
             PlaceOfferCall apiCall = new PlaceOfferCall(apiContext);
             apiCall.Offer = new OfferType()
             {
                 Action = BidActionCodeType.Purchase,
                 Quantity = 1,
-                MaxBid = new AmountType() { currencyID = CurrencyCodeType.USD, Value = Item.StartPrice.Value }
+                MaxBid = new AmountType() { currencyID = CurrencyCodeType.USD, Value = AValue }
             };
             apiCall.AbstractRequest.EndUserIP = "71.234.110.72";
-            apiCall.ItemID = Item.ItemID;
+            apiCall.ItemID = ItemID;
             apiCall.Execute();
             if (apiCall.HasError)
             {
@@ -328,19 +328,20 @@ namespace Utility
         public static int GetItemList_GetOrders(ApiContext apiContext, int Page)
         {
             GetOrdersCall apiCall = new GetOrdersCall(apiContext);
+            
             apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
             //apiCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "TransactionID", "PaginationResult", "TransactionArray.Transaction.Buyer.UserID", "TransactionArray.Transaction.Item.Title" });
             apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = Page };
 
-            apiCall.Execute();
+            //apiCall.Execute();
             apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - START, page {0}", 1));
 
             GeteBayOfficialTimeCall timeCall = new GeteBayOfficialTimeCall(apiContext);
             TimeSpan timeDiff = DateTime.Now - timeCall.GeteBayOfficialTime();
             
             TimeFilter createTime = new TimeFilter() {
-                TimeFrom = new DateTime(2012, 8, 15, 12, 00, 0).Subtract(timeDiff), 
-                TimeTo = new DateTime(2012, 8, 15, 13, 36, 59).Subtract(timeDiff) };
+                TimeFrom = new DateTime(2012, 9, 1, 12, 00, 0).Subtract(timeDiff), 
+                TimeTo = new DateTime(2012, 9, 8, 13, 36, 59).Subtract(timeDiff) };
             OrderTypeCollection items = apiCall.GetOrders(createTime,
                 TradingRoleCodeType.Seller, OrderStatusCodeType.Active);
             apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", 1));
@@ -392,29 +393,34 @@ namespace Utility
             /*******************************************
             Getting Seller list
             */
-            ItemType[] items = GetSellerList(apiCtxSeller);
+            //ItemType[] items = GetSellerList(apiCtxSeller);
 
             
             /*******************************************
             Placing offers
             */
-            /*for (int i = 0; i < 200; i++)
+            for (int i = 0; i < 200; i++)
             {
-                apiContext.ApiLogManager.RecordMessage(String.Format("Buying cycle... {0} - START", i), MessageType.Information, MessageSeverity.Informational);
                 ApiContext apiCtxBuyer = GetContext(SellerOrBuyer.typeBUYER);
-                PlaceOffer(apiCtxBuyer, items[4]);
-                apiContext.ApiLogManager.RecordMessage(String.Format("Buying cycle... {0} - SUCCESS", i), MessageType.Information, MessageSeverity.Informational);
-            }*/
+                apiCtxBuyer.ApiLogManager.RecordMessage(String.Format("Buying cycle... {0} - START", i), MessageType.Information, MessageSeverity.Informational);
+                PlaceOffer(apiCtxBuyer, "110102377760", 9.99);
+                apiCtxBuyer.ApiLogManager.RecordMessage(String.Format("Buying cycle... {0} - SUCCESS", i), MessageType.Information, MessageSeverity.Informational);
+            }
 
-//            GetItemList(apiCtxSeller, 1);
+            //GetItemList(apiCtxSeller, 1);
 
-//            GetItemList_GetOrders(apiCtxSeller, 1);
+            //GetItemList_GetOrders(apiCtxSeller, 1);
 
-            //string sessionId = CreateSessionID(apiCtxSeller);
-
-
-            string token = GetTokenFromeBay(apiCtxSeller, "s+IBAA**39b9427e1390a471d216ff06ffffe626");
+            /*
+            string sessionId = CreateSessionID(apiCtxSeller);
+            apiCtxSeller.ApiLogManager.RecordMessage(String.Format("*** SessionID received: {0}", sessionId));
+            
+             
+            */
+            /*
+            string token = GetTokenFromeBay(apiCtxSeller, "s+IBAA**a58702051390a471d22382d3fffffa0a");
             apiCtxSeller.ApiLogManager.RecordMessage(String.Format("*** Token received: {0}", token));
+            */
 
             metrics.GenerateReport(apiCtxSeller.ApiLogManager.ApiLoggerList[0]);
         }
