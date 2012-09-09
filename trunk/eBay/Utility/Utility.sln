@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Utility.vsmdi = Utility.vsmdi
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eBayApp", "eBayApp\eBayApp.csproj", "{A5942600-256E-496E-A697-EF15CFD16B12}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eBayTest", "eBayTest\eBayTest.csproj", "{8A187353-4867-4A26-96D9-9CF348419F4E}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -48,16 +48,16 @@ Global
 		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Release|x86.ActiveCfg = Release|Any CPU
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Debug|x86.ActiveCfg = Debug|x86
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Debug|x86.Build.0 = Debug|x86
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Release|Any CPU.ActiveCfg = Release|x86
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Release|Mixed Platforms.Build.0 = Release|x86
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Release|x86.ActiveCfg = Release|x86
-		{A5942600-256E-496E-A697-EF15CFD16B12}.Release|x86.Build.0 = Release|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Debug|x86.ActiveCfg = Debug|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Debug|x86.Build.0 = Debug|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Release|Any CPU.ActiveCfg = Release|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Release|Mixed Platforms.Build.0 = Release|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Release|x86.ActiveCfg = Release|x86
+		{8A187353-4867-4A26-96D9-9CF348419F4E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
