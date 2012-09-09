@@ -10,7 +10,7 @@ namespace Utility
     public class ThreadedRequest
     {
         private List<PageProducer> pages = new List<PageProducer>();
-        private List<Thread> threads;
+        //private List<Thread> threads;
         //private ApiContext apiContext;
         private int processorCount;
 
@@ -37,7 +37,7 @@ namespace Utility
             /*pages.Add(Factory.CreatePageObject(ApiContext, 1));             // Page 1 will return the number of pages
             pages[0].Execute(ApiContext);
 
-            if (pages[0].NumPages > 1)
+            /*if (pages[0].NumPages > 1)
             {
                 ApiContext.ApiLogManager.RecordMessage(String.Format("Number of pages: {0}", pages[0].NumPages));
                 for (int i = 2; i <= pages[0].NumPages; i++)

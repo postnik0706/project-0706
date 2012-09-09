@@ -32,12 +32,13 @@ namespace Utility
             typeSELLER, typeBUYER
         }
 
-        private static ApiLogger logger = new FileLogger(ConfigurationSettings.AppSettings.Get("eBayLogger"));
-        private static CallMetricsTable metrics;
-        private static ApiLogManager logManager;
+        private static ApiLogger logger = new FileLogger(
+            ConfigurationManager.AppSettings["eBayLogger"]);
+        public static CallMetricsTable Metrics;
+        public static ApiLogManager LogManager;
         //public static ApiLogger Logger { get {return logger; } }
 
-        private static ApiContext GetContext(SellerOrBuyer Who)
+        public static ApiContext GetContext(SellerOrBuyer Who)
         {
             ApiContext apiContext = new ApiContext();
             apiContext.SoapApiServerUrl =
@@ -56,18 +57,18 @@ namespace Utility
             
             apiContext.Site = global::eBay.Service.Core.Soap.SiteCodeType.US;
 
-            metrics = new CallMetricsTable();
+            Metrics = new CallMetricsTable();
             apiContext.EnableMetrics = true;
-            apiContext.CallMetricsTable = metrics;
+            apiContext.CallMetricsTable = Metrics;
 
-            logManager = new ApiLogManager();
-            logManager.EnableLogging = true;
+            LogManager = new ApiLogManager();
+            LogManager.EnableLogging = true;
             
-            logManager.ApiLoggerList.Add(logger);
-            logManager.ApiLoggerList[0].LogApiMessages = true;
-            logManager.ApiLoggerList[0].LogExceptions = true;
-            logManager.ApiLoggerList[0].LogInformations = true;
-            apiContext.ApiLogManager = logManager;
+            LogManager.ApiLoggerList.Add(logger);
+            LogManager.ApiLoggerList[0].LogApiMessages = true;
+            LogManager.ApiLoggerList[0].LogExceptions = true;
+            LogManager.ApiLoggerList[0].LogInformations = true;
+            apiContext.ApiLogManager = LogManager;
 
             return apiContext;
         }
@@ -202,7 +203,9 @@ namespace Utility
             apiCall.EndTimeFrom = new DateTime(2012, 9, 1);
             apiCall.EndTimeTo = new DateTime(2012, 9, 20);
             ItemTypeCollection items = apiCall.GetSellerList();
+
             
+
             List<ItemType> result = new List<ItemType>();
             foreach (ItemType i in items)
             {
@@ -422,7 +425,7 @@ namespace Utility
             apiCtxSeller.ApiLogManager.RecordMessage(String.Format("*** Token received: {0}", token));
             */
 
-            metrics.GenerateReport(apiCtxSeller.ApiLogManager.ApiLoggerList[0]);
+            Metrics.GenerateReport(apiCtxSeller.ApiLogManager.ApiLoggerList[0]);
         }
     }
 }
