@@ -23,6 +23,8 @@ namespace Utility
         public string UPC { get; set; }
 
         public string ISBN { get; set; }
+
+        public StringCollection PictureURL { get; set; }
     }
 
     public class eBayClass
@@ -32,11 +34,69 @@ namespace Utility
             typeSELLER, typeBUYER
         }
 
-        private static ApiLogger logger = new FileLogger(
-            ConfigurationManager.AppSettings["eBayLogger"]);
+        private static ApiLogger logger = new FileLogger(ConfigurationManager.AppSettings["eBayLogger"]);
         public static CallMetricsTable Metrics;
         public static ApiLogManager LogManager;
-        //public static ApiLogger Logger { get {return logger; } }
+
+        private static ApiContext m_SellerContext = null;
+        public static ApiContext SellerContext
+        {
+            get
+            {
+                if (m_SellerContext == null)
+                    m_SellerContext = eBayClass.GetContext(eBayClass.SellerOrBuyer.typeSELLER);
+                return m_SellerContext;
+            }
+        }
+
+        private static ApiContext m_BuyerContext = null;
+        public static ApiContext BuyerContext
+        {
+            get
+            {
+                if (m_BuyerContext == null)
+                    m_BuyerContext = eBayClass.GetContext(eBayClass.SellerOrBuyer.typeBUYER);
+                return m_BuyerContext;
+            }
+        }
+
+        private static DateTime? m_EBayDate = null;
+        private static TimeSpan m_TimeDiff;
+        public static DateTime? EBayDate
+        {
+            get
+            {
+                m_EBayDate = GetEBayDate(SellerContext, out m_TimeDiff);
+                return m_EBayDate.Value;
+            }
+        }
+
+        public static TimeSpan TimeDiff
+        {
+            get
+            {
+                if (!m_EBayDate.HasValue)
+                    m_EBayDate = GetEBayDate(SellerContext, out m_TimeDiff);
+                return m_TimeDiff;
+            }
+        }
+
+        private static AutoResetEvent logFileAccess;
+        public static AutoResetEvent LogFileAccess
+        {
+            get {
+                return logFileAccess;
+            }
+        }
+
+        private static AutoResetEvent logFileReader;
+        public static AutoResetEvent LogFileReader { get { return logFileReader; } }
+
+        static eBayClass()
+        {
+            logFileAccess = new AutoResetEvent(false);
+            logFileReader = new AutoResetEvent(false);
+        }
 
         public static ApiContext GetContext(SellerOrBuyer Who)
         {
@@ -76,11 +136,12 @@ namespace Utility
         public static Item[] BuildItems()
         {
             return new Item[] {
-                new Item() { Title = "The Affair by Lee Child",
-                    Description = "Novell by Lee Child",
-                    Price = 5.89M,
-                    Category = "267",
-                    ISBN = "9780440246305"
+                new Item() { Title = "Matrioshka How Cool",
+                    Description = "By Russian Folklore",
+                    Price = 56.99M,
+                    Category = "160872",
+                    PictureURL = new  StringCollection() { "http://ourrocks.info/alex/images/matrioshka.JPG" },
+                    UPC = "1234567890"
                 },
                 new Item() { Title = "Gadget G200",
                     Description = "Another test gadget",
@@ -134,11 +195,26 @@ namespace Utility
 
             item.ProductListingDetails = new ProductListingDetailsType()
             {
-                UPC = AItem.UPC,
-                ISBN = AItem.ISBN,
                 ProductDetailsURL = "http://alex.tenzee.com",
                 DetailsURL = "http://alex.tenzee.com"
             };
+
+            if ((AItem.PictureURL != null) && (AItem.PictureURL.Count > 0))
+                item.ProductListingDetails.StockPhotoURL = AItem.PictureURL[0];
+
+            item.ProductListingDetails.ListIfNoProductSpecified = true;
+            item.ProductListingDetails.ListIfNoProduct = true;
+
+            if (AItem.UPC != null)
+                item.ProductListingDetails.UPC = AItem.UPC;
+            if (AItem.ISBN != null)
+                item.ProductListingDetails.ISBN = AItem.ISBN;
+
+            if (AItem.PictureURL != null)
+            {
+                item.PictureDetails = new PictureDetailsType();
+                item.PictureDetails.PictureURL = AItem.PictureURL;
+            }
 
             // Return policy
             item.ReturnPolicy = new ReturnPolicyType();
@@ -203,8 +279,6 @@ namespace Utility
             apiCall.EndTimeFrom = new DateTime(2012, 9, 1);
             apiCall.EndTimeTo = new DateTime(2012, 9, 20);
             ItemTypeCollection items = apiCall.GetSellerList();
-
-            
 
             List<ItemType> result = new List<ItemType>();
             foreach (ItemType i in items)
@@ -328,34 +402,138 @@ namespace Utility
             return tokenCall.eBayToken;
         }
 
-        public static int GetItemList_GetOrders(ApiContext apiContext, int Page)
+        public static DateTime GetEBayDate(ApiContext apiContext, out TimeSpan TimeDiff)
         {
+            LogManager.RecordMessage("Starting a GeteBayOfficialTime call");
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            Stopwatch s = Stopwatch.StartNew();
+            GeteBayOfficialTimeCall timeCall = new GeteBayOfficialTimeCall(apiContext);
+            DateTime eBayDate = timeCall.GeteBayOfficialTime();
+            TimeDiff = DateTime.Now - eBayDate;
+            eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
+            s.Stop();
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+            
+            eBayClass.LogManager.RecordMessage("Done; ms: " + s.ElapsedMilliseconds.ToString());
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+            return eBayDate;
+        }
+        
+        public static int GetNumberOfItems(ApiContext apiContext,
+            DateTime DateFrom, DateTime DateTo, bool Active = true, bool Completed = true)
+        {
+            eBayClass.LogManager.RecordMessage("Starting a GetNumberOfItems call");
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            Stopwatch s = Stopwatch.StartNew();
             GetOrdersCall apiCall = new GetOrdersCall(apiContext);
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
+            apiCall.ApiRequest.OutputSelector = new StringCollection() {"TransactionID", "PaginationResult"};
+            apiCall.Pagination = new PaginationType() { EntriesPerPage = 100, PageNumber = 1 };
+            TimeFilter createTime = new TimeFilter()
+            {
+                TimeFrom = DateFrom.Subtract(TimeDiff),
+                TimeTo = DateTo.Subtract(TimeDiff)
+            };
+            OrderStatusCodeType filterStatus = OrderStatusCodeType.All;
+            if (Active && !Completed)
+                filterStatus = OrderStatusCodeType.Active;
+            else if (Completed && !Active)
+                filterStatus = OrderStatusCodeType.Completed;
+
+            OrderTypeCollection items = apiCall.GetOrders(createTime,
+                TradingRoleCodeType.Seller, filterStatus);
+            apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", 1));
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
+            eBayClass.LogManager.RecordMessage("Done; ms: " + s.ElapsedMilliseconds.ToString());
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            return apiCall.PaginationResult.TotalNumberOfEntries;
+        }
+
+        public static List<Transaction> GetItemList_GetOrders(ApiContext apiContext,
+            DateTime DateFrom, DateTime DateTo, bool Active = true, bool Completed = true,
+            bool MinimumOutput = false)
+        {
+            eBayClass.LogManager.RecordMessage("Starting a GetOrders call " + (MinimumOutput ? "with minimum output" : "with normal output"));
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            Stopwatch s = Stopwatch.StartNew();
+            GetOrdersCall apiCall = new GetOrdersCall(apiContext);
+            logFileAccess.Set();
+            logFileReader.WaitOne();
             
             apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
-            //apiCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "TransactionID", "PaginationResult", "TransactionArray.Transaction.Buyer.UserID", "TransactionArray.Transaction.Item.Title" });
-            apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = Page };
-
-            //apiCall.Execute();
             apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - START, page {0}", 1));
+            logFileAccess.Set();
+            logFileReader.WaitOne();
 
-            GeteBayOfficialTimeCall timeCall = new GeteBayOfficialTimeCall(apiContext);
-            TimeSpan timeDiff = DateTime.Now - timeCall.GeteBayOfficialTime();
-            
-            TimeFilter createTime = new TimeFilter() {
-                TimeFrom = new DateTime(2012, 9, 1, 12, 00, 0).Subtract(timeDiff), 
-                TimeTo = new DateTime(2012, 9, 8, 13, 36, 59).Subtract(timeDiff) };
-            OrderTypeCollection items = apiCall.GetOrders(createTime,
-                TradingRoleCodeType.Seller, OrderStatusCodeType.Active);
-            apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", 1));
-
-            foreach (OrderType i in items)
+            TimeFilter createTime = new TimeFilter()
             {
-                //Log.AddLogInfo(String.Format("UserID: {0}\tTransactioNID: {1}\tBuyer Name: {2}", i.Buyer.UserID, i.TransactionID, i.Buyer.BuyerInfo.ShippingAddress.Name));
-                apiContext.ApiLogManager.RecordMessage(String.Format("TransactionID {0}\tBuyer Name{1}\tCreated on {2}",
-                    i.OrderID, i.BuyerUserID, i.CreatedTime));
-            }
-            return apiCall.PaginationResult.TotalNumberOfPages;
+                TimeFrom = DateFrom.Subtract(TimeDiff),
+                TimeTo = DateTo.Subtract(TimeDiff)
+            };
+
+            if (MinimumOutput)
+                apiCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "TransactionID", "PaginationResult", "SellingManagerSalesRecordNumber", "ItemID", "CreatedTime" });
+            
+            OrderStatusCodeType filterStatus = OrderStatusCodeType.All;
+            if (Active && !Completed)
+                filterStatus = OrderStatusCodeType.Active;
+            else if (Completed && !Active)
+                filterStatus = OrderStatusCodeType.Completed;
+
+            int Page = 1;
+            List<Transaction> res = new List<Transaction>();
+            do
+            {
+                apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = Page };
+                OrderTypeCollection items = apiCall.GetOrders(createTime,
+                    TradingRoleCodeType.Seller, filterStatus);
+                logFileAccess.Set();
+                logFileReader.WaitOne();
+                
+                apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", Page));
+                logFileAccess.Set();
+                logFileReader.WaitOne();
+
+                foreach (OrderType i in items)
+                {
+                    foreach (TransactionType j in i.TransactionArray)
+                    {
+                        res.Add(new Transaction() { OrderID=i.OrderID, TransactionId=j.TransactionID,
+                            ItemID=j.Item.ItemID, SellingManagerRecordNumber=i.ShippingDetails.SellingManagerSalesRecordNumber,
+                            CreatedTime=i.CreatedTime });
+                        
+                        apiContext.ApiLogManager.RecordMessage(String.Format("TransactionID {0}\tItem ID{1}\tCreated on {2}",
+                            i.OrderID, j.Item.ItemID, i.CreatedTime));
+                    }
+                }
+                logFileAccess.Set();
+                logFileReader.WaitOne();
+                
+                Page++;
+            } while (Page <= apiCall.PaginationResult.TotalNumberOfPages);
+
+            eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
+            eBayClass.LogManager.RecordMessage("Done; ms: " + s.ElapsedMilliseconds.ToString());
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            return res;
         }
 
         public static void GetItemList(ApiContext apiContext)
@@ -389,8 +567,8 @@ namespace Utility
             /*******************************************
             Adding an item
             */
-            /*AddItem(apiCtxSeller, BuildItem(BuildItems()[0]));
-            AddItem(apiCtxSeller, BuildItem(BuildItems()[1]));*/
+            AddItem(apiCtxSeller, BuildItem(BuildItems()[0]));
+            AddItem(apiCtxSeller, BuildItem(BuildItems()[1]));
             
             
             /*******************************************
@@ -402,17 +580,18 @@ namespace Utility
             /*******************************************
             Placing offers
             */
-            for (int i = 0; i < 200; i++)
+            /*for (int i = 0; i < 200; i++)
             {
                 ApiContext apiCtxBuyer = GetContext(SellerOrBuyer.typeBUYER);
                 apiCtxBuyer.ApiLogManager.RecordMessage(String.Format("Buying cycle... {0} - START", i), MessageType.Information, MessageSeverity.Informational);
                 PlaceOffer(apiCtxBuyer, "110102377760", 9.99);
                 apiCtxBuyer.ApiLogManager.RecordMessage(String.Format("Buying cycle... {0} - SUCCESS", i), MessageType.Information, MessageSeverity.Informational);
             }
-
+            */
             //GetItemList(apiCtxSeller, 1);
 
-            //GetItemList_GetOrders(apiCtxSeller, 1);
+            /*GetItemList_GetOrders(apiCtxSeller, new DateTime(2012, 9, 1),
+                new DateTime(2012, 9, 20));*/
 
             /*
             string sessionId = CreateSessionID(apiCtxSeller);
@@ -426,6 +605,36 @@ namespace Utility
             */
 
             Metrics.GenerateReport(apiCtxSeller.ApiLogManager.ApiLoggerList[0]);
+        }
+
+        public static void GetOrderTransactions(ApiContext apiContext, string ItemID, string[] transactionIds)
+        {
+            Stopwatch s = Stopwatch.StartNew();
+            GetOrderTransactionsCall apiCall = new GetOrderTransactionsCall(apiContext);
+
+            apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
+            apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - START, page {0}", 1));
+
+            ItemTransactionIDTypeCollection inp = new ItemTransactionIDTypeCollection();
+            foreach (var i in transactionIds)
+	        {
+                inp.Add(new ItemTransactionIDType() { TransactionID = i, ItemID = ItemID });
+        	}
+
+            OrderTypeCollection items = apiCall.GetOrderTransactions(inp);
+
+            foreach (OrderType i in items)
+            {
+                foreach (TransactionType j in i.TransactionArray)
+                {
+                    apiContext.ApiLogManager.RecordMessage(String.Format("TransactionID {0}\tItem ID{1}\tCreated on {2}\tItem Title{3}",
+                        i.OrderID, j.Item.ItemID, i.CreatedTime, j.Item.Title));
+                }
+            }
+
+            apiContext.ApiLogManager.RecordMessage("Getting item list - SUCCESS");
+            eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
+            eBayClass.LogManager.RecordMessage("Done; ms: " + s.ElapsedMilliseconds.ToString());
         }
     }
 }
