@@ -11,6 +11,8 @@ using eBay.Service.Call;
 using Utility;
 using System.IO;
 using System.Configuration;
+using eBay.Service.Util;
+using System.Threading;
 
 namespace eBayTest
 {
@@ -20,7 +22,8 @@ namespace eBayTest
     {
         LogWatcher logWatcher;
         public RefreshControlEvent OnRefresh;
-        
+        private List<Transaction> tranList;
+
         public Form1()
         {
             InitializeComponent();
@@ -28,17 +31,17 @@ namespace eBayTest
 
         private void button1_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            ApiContext apiCtxSeller = eBayClass.GetContext(eBayClass.SellerOrBuyer.typeSELLER);
-            GeteBayOfficialTimeCall timeCall = new GeteBayOfficialTimeCall(apiCtxSeller);
-            DateTime eBayTime = timeCall.GeteBayOfficialTime();
-            TimeSpan timeDiff = DateTime.Now - eBayTime;
-            edeBayTime.Text = String.Format("{0:F}", eBayTime);
-            eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
+            string eBayDate = "";
+            string timeDiff = "";
+            
+            ThreadPool.QueueUserWorkItem(t =>
+            {
+                eBayDate = String.Format("{0:F}", eBayClass.EBayDate);
+                timeDiff = eBayClass.TimeDiff.Hours.ToString();
+                eBayClass.LogManager.RecordMessage(String.Format("eBayDate = {0}, timeDiff = {1}",
+                    eBayDate, timeDiff));
+                eBayClass.LogFileAccess.Set();
+            });
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -46,15 +49,18 @@ namespace eBayTest
             OnRefresh = new RefreshControlEvent(RefreshControl);
             logWatcher = new LogWatcher(ConfigurationManager.AppSettings["eBayLogger"],
                 this, log);
+            tranList = new List<Transaction>();
+            eBayClass.LogFileAccess.Set();
         }
 
         private void RefreshControl(string Contents)
         {
-            if ((log.Text.Length < Contents.Length) && (log.Text.Length != 0))
+            if ((log.Text.Length < Contents.Replace("\r\n", "\n").Length)
+                && (log.Text.Length != 0))
             {
-                log.AppendText(Contents.Substring(log.Text.Length));
+                log.AppendText(Contents.Replace("\r\n", "\n").Substring(log.Text.Length));
             }
-            else
+            else if ((log.Text.Length == 0) || (Contents == ""))
                 log.Text = Contents;
 
             log.SelectionStart = log.Text.Length;
@@ -64,15 +70,91 @@ namespace eBayTest
         
         private void btnClearLog_Click(object sender, EventArgs e)
         {
-            logWatcher.Pause();
             try
             {
                 File.WriteAllText(ConfigurationManager.AppSettings["eBayLogger"], "");
             }
             finally
             {
-                logWatcher.Resume();
+                eBayClass.LogFileAccess.Set();
             }
+        }
+
+        private void NormalizeDates(out DateTime DateFrom, out DateTime DateTo)
+        {
+            DateFrom = new DateTime(cnDateFrom.Value.Year, cnDateFrom.Value.Month,
+                cnDateFrom.Value.Day);
+            DateTo = new DateTime(cnDateTo.Value.Year, cnDateTo.Value.Month,
+                cnDateTo.Value.Day, 23, 59, 59);
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            DateTime dtFrom, dtTo;
+            NormalizeDates(out dtFrom, out dtTo);
+            ThreadPool.QueueUserWorkItem(t =>
+                {
+                    int numOfItems = eBayClass.GetNumberOfItems(eBayClass.SellerContext,
+                        dtFrom, dtTo, cbActive.Checked, cbCompleted.Checked);
+                    eBayClass.LogManager.RecordMessage(String.Format("Number of Items = {0}",
+                        numOfItems));
+                    eBayClass.LogFileAccess.Set();
+                });
+        }
+
+        private void btnGo_Click(object sender, EventArgs e)
+        {
+            DateTime dtFrom, dtTo;
+            NormalizeDates(out dtFrom, out dtTo);
+            ThreadPool.QueueUserWorkItem(t =>
+                {
+                    tranList = eBayClass.GetItemList_GetOrders(eBayClass.SellerContext,
+                        dtFrom, dtTo, cbActive.Checked, cbCompleted.Checked);
+                });
+        }
+
+        private void btnDoSale_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 200; i++)
+            {
+                eBayClass.SellerContext.ApiLogManager.RecordMessage(String.Format("Buying cycle... {0} - START", i), MessageType.Information, MessageSeverity.Informational);
+                eBayClass.PlaceOffer(eBayClass.BuyerContext, edItemId.Text, Double.Parse(edPrice.Text));
+                eBayClass.SellerContext.ApiLogManager.RecordMessage(String.Format("Buying cycle... {0} - SUCCESS", i), MessageType.Information, MessageSeverity.Informational);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            DateTime dtFrom, dtTo;
+            NormalizeDates(out dtFrom, out dtTo);
+            ThreadPool.QueueUserWorkItem(t =>
+                {
+                    tranList = eBayClass.GetItemList_GetOrders(eBayClass.SellerContext,
+                        dtFrom, dtTo, cbActive.Checked, cbCompleted.Checked,
+                        true);
+                });
+        }
+
+        private void btnGetItemTransactions_Click(object sender, EventArgs e)
+        {
+            Transaction[] filteredTrans = tranList.FindAll(t => t.ItemID == edItemId_Get.Text).ToArray();
+            List<string> transactionIds = new List<string>();
+            foreach (var i in filteredTrans)
+            {
+                transactionIds.Add(i.TransactionId);
+            }
+            if (transactionIds.Count == 0)
+            {
+                MessageBox.Show("List of Transaction IDs is empty. Check that you entered ItemID");
+                return;
+            }
+
+            eBayClass.GetOrderTransactions(eBayClass.SellerContext, edItemId_Get.Text, transactionIds.ToArray());
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            logWatcher.Quit = true;
         }
     }
 }

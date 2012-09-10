@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading;
+using Utility;
 
 namespace eBayTest
 {
@@ -11,56 +13,55 @@ namespace eBayTest
     {
         FileStream Stream;
         StreamReader Reader;
-        FileSystemWatcher Watcher;
 
         public string Filename { get; set; }
         public RichTextBox Control { get; set; }
         public Form1 Parent { get; set; }
+        public bool Quit { get; set; }
 
         public LogWatcher(string Filename, Form1 Parent, RichTextBox Control)
         {
             this.Filename = Filename;
             this.Control = Control;
             this.Parent = Parent;
+            Quit = false;
 
-            RefreshControl();
-            Watcher = new FileSystemWatcher();
-            Watcher.Path = Path.GetDirectoryName(Filename);
-            Watcher.NotifyFilter = (NotifyFilters.LastWrite | NotifyFilters.Size);
-            Watcher.Filter = Path.GetFileName(Filename);
-            Watcher.Changed += OnChanged;
-            Watcher.EnableRaisingEvents = true;
+            ThreadPool.QueueUserWorkItem(t =>
+                {
+                    RefreshControl();
+                });
         }
 
         private void RefreshControl()
         {
             string Contents;
 
-            using (Stream = new System.IO.FileStream(Filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+            while (!Quit)
             {
-                using (Reader = new System.IO.StreamReader(Stream))
+                eBayClass.LogFileAccess.WaitOne();
+                Thread.Sleep(10);
+                try
                 {
-                    Contents = Reader.ReadToEnd();
+                   using (Stream = new System.IO.FileStream(Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (Reader = new System.IO.StreamReader(Stream))
+                        {
+                            Contents = Reader.ReadToEnd();
+                        }
+                    }
                 }
-            }
+                finally
+                {
+                    eBayClass.LogFileReader.Set();
+                }
 
-            Parent.Invoke(Parent.OnRefresh, Contents);
+                Parent.Invoke(Parent.OnRefresh, Contents);
+            }
         }
         
         public void OnChanged(object o, FileSystemEventArgs e)
         {
             RefreshControl();
-        }
-
-        public void Pause()
-        {
-            Watcher.EnableRaisingEvents = false;
-        }
-        
-        public void Resume()
-        {
-            RefreshControl();
-            Watcher.EnableRaisingEvents = true;
         }
     }
 }
