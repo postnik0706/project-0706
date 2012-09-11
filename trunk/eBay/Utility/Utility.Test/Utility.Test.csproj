@@ -38,6 +38,9 @@
       <HintPath>..\..\..\bin\eBaySDKDotNET779Point\eBay .NET SDK v779 Point Release\eBay.Service.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Moq">
+      <HintPath>..\..\..\bin\Moq.4.0.10827.Final\Moq.4.0.10827\NET35\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">

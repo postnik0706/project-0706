@@ -34,25 +34,28 @@ namespace eBayTest
 
         private void RefreshControl()
         {
-            string Contents;
+            string Contents = "";
 
             while (!Quit)
             {
                 eBayClass.LogFileAccess.WaitOne();
-                Thread.Sleep(10);
-                try
+
+                if (File.Exists(Filename))
                 {
-                   using (Stream = new System.IO.FileStream(Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    try
                     {
-                        using (Reader = new System.IO.StreamReader(Stream))
+                        using (Stream = new System.IO.FileStream(Filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
-                            Contents = Reader.ReadToEnd();
+                            using (Reader = new System.IO.StreamReader(Stream))
+                            {
+                                Contents = Reader.ReadToEnd();
+                            }
                         }
                     }
-                }
-                finally
-                {
-                    eBayClass.LogFileReader.Set();
+                    finally
+                    {
+                        eBayClass.LogFileReader.Set();
+                    }
                 }
 
                 Parent.Invoke(Parent.OnRefresh, Contents);

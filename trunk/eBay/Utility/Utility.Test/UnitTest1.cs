@@ -59,5 +59,10 @@ namespace Utility.Test
             //ThreadedRequest r = new ThreadedRequest(null, new TestPageObjectFactory());
             //Console.WriteLine(r.Pages.Count);
         }
+
+        [TestMethod]
+        public void TestMoq()
+        {
+        }
     }
 }

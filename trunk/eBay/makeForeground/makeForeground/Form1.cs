@@ -75,7 +75,7 @@ namespace makeForeground
             GetWindowText(hWnd, sb, sb.Capacity);
             label2.Text = sb.ToString();
 
-            if (sb.ToString().IndexOf("Notepad") > 0)
+            if (sb.ToString().ToUpper().IndexOf("UPS WORLDSHIP") >= 0)
             {
                 // First approach
                 //this.Activate();
