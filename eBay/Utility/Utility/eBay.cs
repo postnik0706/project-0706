@@ -227,10 +227,20 @@ namespace Utility
         {
             ShippingDetailsType sd = new ShippingDetailsType();
 
+            /*sd.InternationalShippingServiceOption = new InternationalShippingServiceOptionsTypeCollection(
+                new InternationalShippingServiceOptionsType[] {
+                    new InternationalShippingServiceOptionsType()
+                    {
+                        ShippingService = ShippingTypeCodeType.Flat.ToString(),
+                        ShippingServiceAdditionalCost = new AmountType() { Value = 3.8, currencyID = CurrencyCodeType.USD },
+                        ShippingServiceCost = new AmountType() { Value = 3.8, currencyID = CurrencyCodeType.USD},
+                        ShippingServicePriority = 1,
+                        ShippingInsuranceCost = new AmountType() { Value = 5.02, currencyID = CurrencyCodeType.USD }
+                    }
+                });
+            */
             sd.ApplyShippingDiscount = true;
-
             sd.ShippingType = ShippingTypeCodeType.Flat;
-
             sd.ShippingServiceOptions = new ShippingServiceOptionsTypeCollection(
                 new ShippingServiceOptionsType[] {
                     new ShippingServiceOptionsType()
@@ -253,6 +263,85 @@ namespace Utility
 
             try
             {
+                FeeTypeCollection fees = apiCall.AddItem(item);
+                apiContext.ApiLogManager.RecordMessage("Completed the call", MessageType.Information, MessageSeverity.Informational);
+
+                apiContext.ApiLogManager.RecordMessage("The item was listed successfully", MessageType.Information, MessageSeverity.Informational);
+                apiContext.ApiLogManager.RecordMessage("*************** BEGINNING OF THE LIST", MessageType.Information, MessageSeverity.Informational);
+                foreach (FeeType i in fees)
+                {
+                    apiContext.ApiLogManager.RecordMessage(String.Format("{0} = {1}", i.Name, i.Fee.Value), MessageType.Information, MessageSeverity.Informational);
+                }
+                apiContext.ApiLogManager.RecordMessage("*************** END OF THE LIST", MessageType.Information, MessageSeverity.Informational);
+            }
+            catch (Exception e)
+            {
+                apiContext.ApiLogManager.RecordMessage(e.Message, MessageType.Information, MessageSeverity.Informational);
+                throw;
+            }
+        }
+
+        private static void AddItem(ApiContext apiContext)
+        {
+            AddItemCall apiCall = new AddItemCall(apiContext);
+            apiContext.ApiLogManager.RecordMessage("Beginning to call eBay, please wait...", MessageType.Information, MessageSeverity.Informational);
+
+            try
+            {
+                ItemType item = new ItemType();
+
+                item.ProductListingDetails = new ProductListingDetailsType()
+                {
+                    UPC = "610214624192",
+                    DetailsURL = "http://www.google.com",
+                    IncludePrefilledItemInformation = true,
+                    IncludePrefilledItemInformationSpecified = true,
+                    IncludeStockPhotoURL = true,
+                    IncludeStockPhotoURLSpecified = true,
+                    StockPhotoURL = "http://i.ebayimg.com/02/!!eFW3!wBGM~$(KGrHqF,!lcE1F1IqYejBNUs+NoIJg~~_7.JPG?set_id=89040003C1"
+                };
+
+
+                item.Title = "Dell Streak 7 16GB, Wi-Fi + 4G (T-Mobile), 7in - Black";
+                item.Description = "Cool smartphone";
+                item.ListingType = ListingTypeCodeType.FixedPriceItem;
+                item.ConditionDisplayName = "New";
+
+                // listing price
+                item.Currency = CurrencyCodeType.USD;
+                item.StartPrice = new AmountType() { Value = (Double)161.83, currencyID = CurrencyCodeType.USD };
+
+                // listing duration
+                item.ListingDuration = "Days_10";
+
+                // item location and country
+                item.Location = "Farmington";
+                item.Country = CountryCodeType.US;
+
+                // listing category
+                item.PrimaryCategory = new CategoryType() { CategoryID = "171485" };
+
+                // item quantity
+                item.Quantity = 300;
+
+                // payment methods
+                item.PaymentMethods = new BuyerPaymentMethodCodeTypeCollection(
+                    new BuyerPaymentMethodCodeType[] { BuyerPaymentMethodCodeType.PayPal }
+                );
+                item.PayPalEmailAddress = "me@ebay.com";
+
+                // item condition, new
+                item.ConditionID = 1000;
+
+                // handling time is required
+                item.DispatchTimeMax = 5;
+
+                item.ShippingDetails = BuildShippingDetailsType();
+
+                // Return policy
+                item.ReturnPolicy = new ReturnPolicyType();
+                item.ReturnPolicy.ReturnsAcceptedOption = "ReturnsAccepted";
+
                 FeeTypeCollection fees = apiCall.AddItem(item);
                 apiContext.ApiLogManager.RecordMessage("Completed the call", MessageType.Information, MessageSeverity.Informational);
 
@@ -569,12 +658,16 @@ namespace Utility
             */
             AddItem(apiCtxSeller, BuildItem(BuildItems()[0]));
             AddItem(apiCtxSeller, BuildItem(BuildItems()[1]));
+            AddItem(apiCtxSeller);
             
             
             /*******************************************
             Getting Seller list
             */
             //ItemType[] items = GetSellerList(apiCtxSeller);
+
+            
+            
 
             
             /*******************************************
@@ -636,5 +729,121 @@ namespace Utility
             eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
             eBayClass.LogManager.RecordMessage("Done; ms: " + s.ElapsedMilliseconds.ToString());
         }
+
+        public static void GetItemTransactions(ApiContext apiContext, string ItemID)
+        {
+            Stopwatch s = Stopwatch.StartNew();
+            GetItemTransactionsCall apiCall = new GetItemTransactionsCall(apiContext);
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
+            apiCall.IncludeContainingOrder = true;
+            apiCall.IncludeFinalValueFee = true;
+            apiCall.Pagination = new PaginationType() { EntriesPerPage = 100, PageNumber = 1 };
+            apiContext.ApiLogManager.RecordMessage(String.Format("Getting item transactions - START, page {0}", 1));
+            //apiCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "PaginationResult", "OrderID", "OrderLineItemID", "SellingManagerSalesRecordNumber", "TransactionArray.Transaction.Buyer.UserID", "Item.ItemID", "TransactionID", "TransactionArray.Transaction.QuantityPurchased"});
+
+            int Page = 1;
+            do
+            {
+                TransactionTypeCollection items = apiCall.GetItemTransactions(ItemID, new TimeFilter() { TimeFrom = DateTime.Now.Subtract(TimeDiff).Subtract(new TimeSpan(29, 0, 0, 0)),
+                    TimeTo = DateTime.Now.Subtract(TimeDiff) } );
+                apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", Page));
+
+                logFileAccess.Set();
+                logFileReader.WaitOne();
+
+                foreach (TransactionType i in items)
+                {
+                    apiContext.ApiLogManager.RecordMessage(String.Format("TransactionID {0}\tItemID {1}\tItem Title{2}",
+                        i.ContainingOrder != null ? i.ContainingOrder.OrderID : i.OrderLineItemID, apiCall.ItemID, apiCall.Item.Title));
+                }
+                logFileAccess.Set();
+                logFileReader.WaitOne();
+
+                Page++;
+            } while (Page <= apiCall.PaginationResult.TotalNumberOfPages);
+
+            apiContext.ApiLogManager.RecordMessage("Getting Transactions - SUCCESS");
+            eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
+            eBayClass.LogManager.RecordMessage("Done; ms: " + s.ElapsedMilliseconds.ToString());
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+        }
+
+        public static void GetSellingManagerSaleRecord(ApiContext apiContext, string p)
+        {
+            Stopwatch s = Stopwatch.StartNew();
+            GetSellingManagerSoldListingsCall apiCall = new GetSellingManagerSoldListingsCall(apiContext);
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
+            apiCall.Pagination = new PaginationType() { EntriesPerPage = 100, PageNumber = 1 };
+            apiContext.ApiLogManager.RecordMessage(String.Format("Getting Selling Manager Sale Record - START, page {0}", 1));
+            apiCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "PaginationResult", "OrderID", "OrderLineItemID", "SellingManagerSalesRecordNumber", "Item.ItemID", "TransactionID", "TransactionArray.Transaction.QuantityPurchased"});
+
+            int Page = 1;
+            do
+            {
+                SellingManagerSoldOrderTypeCollection items = apiCall.GetSellingManagerSoldListings(
+                    new SellingManagerSearchType() { SearchType = SellingManagerSearchTypeCodeType.SaleRecordID, SearchValue = p }, 0, null, false,
+                    SellingManagerSoldListingsSortTypeCodeType.SalesRecordID, SortOrderCodeType.Ascending,
+                    new PaginationType() { EntriesPerPage = 100, PageNumber = 1 }, null);
+
+                apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", Page));
+
+                logFileAccess.Set();
+                logFileReader.WaitOne();
+
+                foreach (SellingManagerSoldOrderType i in items)
+                {
+                    apiContext.ApiLogManager.RecordMessage(String.Format("TransactionID {0}", i.SaleRecordID));
+                }
+                logFileAccess.Set();
+                logFileReader.WaitOne();
+
+                Page++;
+            }
+            while (Page <= apiCall.PaginationResult.TotalNumberOfPages);
+
+            apiContext.ApiLogManager.RecordMessage("Getting Transactions - SUCCESS");
+            eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
+            eBayClass.LogManager.RecordMessage("Done; ms: " + s.ElapsedMilliseconds.ToString());
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+        }
+
+        public static void GetOrderTransactions(ApiContext apiContext, string p)
+        {
+            Stopwatch s = Stopwatch.StartNew();
+            GetOrderTransactionsCall apiCall = new GetOrderTransactionsCall(apiContext);
+            apiContext.ApiLogManager.RecordMessage(String.Format("Getting Order transactions - START, page {0}", 1));
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            ItemTransactionIDTypeCollection inp = new ItemTransactionIDTypeCollection() { new ItemTransactionIDType() { OrderLineItemID = p } };
+            OrderTypeCollection items = apiCall.GetOrderTransactions(inp);
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            foreach (OrderType i in items)
+            {
+                foreach (TransactionType j in i.TransactionArray)
+                {
+                    apiContext.ApiLogManager.RecordMessage(String.Format("TransactionID {0}\tItem ID{1}\tCreated on {2}\tItem Title{3}",
+                        i.OrderID, j.Item.ItemID, i.CreatedTime, j.Item.Title));
+                }
+            }
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+
+            apiContext.ApiLogManager.RecordMessage("Getting item list - SUCCESS");
+            eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
+            eBayClass.LogManager.RecordMessage("Done; ms: " + s.ElapsedMilliseconds.ToString());
+            logFileAccess.Set();
+            logFileReader.WaitOne();
+       }
     }
 }

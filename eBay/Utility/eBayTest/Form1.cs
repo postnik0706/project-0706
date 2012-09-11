@@ -137,24 +137,31 @@ namespace eBayTest
 
         private void btnGetItemTransactions_Click(object sender, EventArgs e)
         {
-            Transaction[] filteredTrans = tranList.FindAll(t => t.ItemID == edItemId_Get.Text).ToArray();
-            List<string> transactionIds = new List<string>();
-            foreach (var i in filteredTrans)
-            {
-                transactionIds.Add(i.TransactionId);
-            }
-            if (transactionIds.Count == 0)
-            {
-                MessageBox.Show("List of Transaction IDs is empty. Check that you entered ItemID");
-                return;
-            }
-
-            eBayClass.GetOrderTransactions(eBayClass.SellerContext, edItemId_Get.Text, transactionIds.ToArray());
+            ThreadPool.QueueUserWorkItem(t =>
+                {
+                    eBayClass.GetItemTransactions(eBayClass.SellerContext, edItemId_Get.Text);
+                });
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             logWatcher.Quit = true;
+        }
+
+        private void btnGetSellingManagerSaleRecord_Click(object sender, EventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(t =>
+                {
+                    eBayClass.GetSellingManagerSaleRecord(eBayClass.SellerContext, edRecordNumber.Text);
+                });
+        }
+
+        private void btnGetOrderTransactions_Click(object sender, EventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(t =>
+                {
+                    eBayClass.GetOrderTransactions(eBayClass.SellerContext, edOrderLineItemID.Text);
+                });
         }
     }
 }
