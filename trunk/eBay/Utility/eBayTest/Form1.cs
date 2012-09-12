@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using eBay.Service.Core.Sdk;
@@ -160,7 +159,7 @@ namespace eBayTest
         {
             ThreadPool.QueueUserWorkItem(t =>
                 {
-                    eBayClass.GetOrderTransactions(eBayClass.SellerContext, edOrderLineItemID.Text);
+                    eBayClass.GetOrderTransactions(eBayClass.SellerContext, edTranItemID.Text, edTransactionID.Text);
                 });
         }
     }
