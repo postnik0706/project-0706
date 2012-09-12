@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="eBay.cs" />
+    <Compile Include="eBayAbstraction.cs" />
     <Compile Include="PageObjectFactory.cs" />
     <Compile Include="PageProducer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

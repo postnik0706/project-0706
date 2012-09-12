@@ -31,6 +31,8 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.edTranItemID = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.edTransactionID = new System.Windows.Forms.TextBox();
             this.btnGetOrderTransactions = new System.Windows.Forms.Button();
@@ -57,9 +59,6 @@
             this.log = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnClearLog = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.edTranItemID = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -83,7 +82,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.log);
             this.splitContainer1.Panel2.Controls.Add(this.panel1);
             this.splitContainer1.Size = new System.Drawing.Size(815, 389);
-            this.splitContainer1.SplitterDistance = 396;
+            this.splitContainer1.SplitterDistance = 399;
             this.splitContainer1.TabIndex = 1;
             // 
             // tabControl1
@@ -94,7 +93,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(396, 389);
+            this.tabControl1.Size = new System.Drawing.Size(399, 389);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPage1
@@ -126,10 +125,26 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(388, 363);
+            this.tabPage1.Size = new System.Drawing.Size(391, 363);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Operations";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // edTranItemID
+            // 
+            this.edTranItemID.Location = new System.Drawing.Point(170, 261);
+            this.edTranItemID.Name = "edTranItemID";
+            this.edTranItemID.Size = new System.Drawing.Size(87, 20);
+            this.edTranItemID.TabIndex = 24;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(258, 264);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(28, 13);
+            this.label6.TabIndex = 23;
+            this.label6.Text = "TrID";
             // 
             // label2
             // 
@@ -334,7 +349,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(365, 363);
+            this.tabPage2.Size = new System.Drawing.Size(388, 363);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Utility";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -346,7 +361,7 @@
             this.log.Location = new System.Drawing.Point(0, 0);
             this.log.Name = "log";
             this.log.ReadOnly = true;
-            this.log.Size = new System.Drawing.Size(415, 357);
+            this.log.Size = new System.Drawing.Size(412, 357);
             this.log.TabIndex = 3;
             this.log.Text = "";
             this.log.WordWrap = false;
@@ -357,35 +372,19 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 357);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(415, 32);
+            this.panel1.Size = new System.Drawing.Size(412, 32);
             this.panel1.TabIndex = 4;
             // 
             // btnClearLog
             // 
             this.btnClearLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearLog.Location = new System.Drawing.Point(312, 5);
+            this.btnClearLog.Location = new System.Drawing.Point(309, 5);
             this.btnClearLog.Name = "btnClearLog";
             this.btnClearLog.Size = new System.Drawing.Size(91, 23);
             this.btnClearLog.TabIndex = 0;
             this.btnClearLog.Text = "Clear";
             this.btnClearLog.UseVisualStyleBackColor = true;
             this.btnClearLog.Click += new System.EventHandler(this.btnClearLog_Click);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(258, 264);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(28, 13);
-            this.label6.TabIndex = 23;
-            this.label6.Text = "TrID";
-            // 
-            // edTranItemID
-            // 
-            this.edTranItemID.Location = new System.Drawing.Point(170, 261);
-            this.edTranItemID.Name = "edTranItemID";
-            this.edTranItemID.Size = new System.Drawing.Size(87, 20);
-            this.edTranItemID.TabIndex = 24;
             // 
             // Form1
             // 
@@ -395,11 +394,9 @@
             this.Controls.Add(this.splitContainer1);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
