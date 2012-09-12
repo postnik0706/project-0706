@@ -4,55 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using eBay.Service.Core.Sdk;
+using FakeItEasy;
+using eBay.Service.Core.Soap;
 
 namespace Utility.Test
 {
-    class TestPageProducer : Utility.PageProducer
-    {
-        string output = "";
-
-        public override int NumPages
-        {
-            get
-            {
-                return 5;
-            }
-        }
-
-        public TestPageProducer()
-        {
-        }
-
-        public TestPageProducer(ApiContext ApiContext, int PageNumber)
-        {
-            pageNumber = PageNumber;
-        }
-
-        public override string ToString()
-        {
-            return output;
-        }
-
-        public override void Execute(Object obj)
-        {
-            output = "Page " + pageNumber.ToString();
-        }
-
-        public int pageNumber { get; set; }
-    }
-
-    class TestPageObjectFactory : PageObjectFactory
-    {
-        public override PageProducer CreatePageObject(ApiContext ApiContext, int PageNumber)
-        {
-            return new TestPageProducer(ApiContext, PageNumber);
-        }
-    }
-
     [TestClass]
     public class UnitTest1
     {
-        [TestMethod]
+        //[TestMethod]
         public void TestMethod1()
         {
             Utility.eBayClass.Run();
@@ -61,8 +21,28 @@ namespace Utility.Test
         }
 
         [TestMethod]
-        public void TestMoq()
+        public void GetOrders_Committed_SingleItem_OrderStatus_Active()
         {
+            // Arrange
+            IGetOrdersCall eBay = A.Fake<IGetOrdersCall>();
+            A.CallTo(() => eBay.GetOrders(
+                A<TimeFilter>.Ignored,
+                A<TradingRoleCodeType>.Ignored,
+                A<OrderStatusCodeType>.Ignored)).Returns(
+                    new OrderTypeCollection()
+                    {
+                        new OrderType()
+                        {
+                            OrderStatus = OrderStatusCodeType.Active
+                        }
+                    });
+
+            // Act
+            List<Transaction> rs = eBayClass.GetOrders(eBay,
+                DateTime.Now, DateTime.Now);
+
+            // Assert
+            rs[0].OrderStatus = OrderStatusCodeType.Active;
         }
     }
 }

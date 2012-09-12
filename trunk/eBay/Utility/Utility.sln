@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{7FE05296-10A9-45EB-BEA5-DB4DBEE8767A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility.Test", "Utility.Test\Utility.Test.csproj", "{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2DE63170-0741-45B4-92E4-21061907DF66}"
 	ProjectSection(SolutionItems) = preProject
 		Local.testsettings = Local.testsettings
@@ -37,16 +35,6 @@ Global
 		{7FE05296-10A9-45EB-BEA5-DB4DBEE8767A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7FE05296-10A9-45EB-BEA5-DB4DBEE8767A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7FE05296-10A9-45EB-BEA5-DB4DBEE8767A}.Release|x86.ActiveCfg = Release|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{4B82ED37-BD9C-422B-BF0F-BF4541BC1CFA}.Release|x86.ActiveCfg = Release|Any CPU
 		{8A187353-4867-4A26-96D9-9CF348419F4E}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{8A187353-4867-4A26-96D9-9CF348419F4E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{8A187353-4867-4A26-96D9-9CF348419F4E}.Debug|Mixed Platforms.Build.0 = Debug|x86

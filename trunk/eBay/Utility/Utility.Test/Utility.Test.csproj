@@ -37,11 +37,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\bin\eBaySDKDotNET779Point\eBay .NET SDK v779 Point Release\eBay.Service.dll</HintPath>
     </Reference>
+    <Reference Include="FakeItEasy">
+      <HintPath>..\..\..\bin\FakeItEasy-1.7.4257.42-NET3.5\FakeItEasy.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Utility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Utility\bin\Debug\Utility.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -52,12 +59,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTest1.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Utility\Utility.csproj">
-      <Project>{7FE05296-10A9-45EB-BEA5-DB4DBEE8767A}</Project>
-      <Name>Utility</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Utility\App.config">

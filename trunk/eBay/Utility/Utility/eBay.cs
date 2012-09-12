@@ -490,7 +490,7 @@ namespace Utility
             Blink();
 
             Stopwatch s = Stopwatch.StartNew();
-            GetOrdersCall apiCall = new GetOrdersCall(apiContext);
+            GetOrdersCall_ apiCall = new GetOrdersCall_(apiContext);
             Blink();
 
             apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
@@ -519,19 +519,16 @@ namespace Utility
             return apiCall.PaginationResult.TotalNumberOfEntries;
         }
 
-        public static List<Transaction> GetItemList_GetOrders(ApiContext apiContext,
+        public static List<Transaction> GetOrders(IGetOrdersCall AGetOrdersCall,
             DateTime DateFrom, DateTime DateTo, bool Active = true, bool Completed = true,
             bool MinimumOutput = false)
         {
-            eBayClass.LogManager.RecordMessage("Starting a GetOrders call " + (MinimumOutput ? "with minimum output" : "with normal output"));
+            AGetOrdersCall.ApiContext.ApiLogManager.RecordMessage("Starting a GetOrders call " + (MinimumOutput ? "with minimum output" : "with normal output"));
             Blink();
 
             Stopwatch s = Stopwatch.StartNew();
-            GetOrdersCall apiCall = new GetOrdersCall(apiContext);
-            Blink();
-            
-            apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
-            apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - START, page {0}", 1));
+            AGetOrdersCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
+            AGetOrdersCall.ApiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - START, page {0}", 1));
             Blink();
 
             TimeFilter createTime = new TimeFilter()
@@ -541,7 +538,7 @@ namespace Utility
             };
 
             if (MinimumOutput)
-                apiCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "TransactionID", "PaginationResult", "SellingManagerSalesRecordNumber", "ItemID", "CreatedTime" });
+                AGetOrdersCall.ApiRequest.OutputSelector = new StringCollection(new string[] { "TransactionID", "PaginationResult", "SellingManagerSalesRecordNumber", "ItemID", "CreatedTime" });
             
             OrderStatusCodeType filterStatus = OrderStatusCodeType.All;
             if (Active && !Completed)
@@ -553,12 +550,12 @@ namespace Utility
             List<Transaction> res = new List<Transaction>();
             do
             {
-                apiCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = Page };
-                OrderTypeCollection items = apiCall.GetOrders(createTime,
+                AGetOrdersCall.Pagination = new PaginationType() { EntriesPerPage = 200, PageNumber = Page };
+                OrderTypeCollection items = AGetOrdersCall.GetOrders(createTime,
                     TradingRoleCodeType.Seller, filterStatus);
                 Blink();
-                
-                apiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", Page));
+
+                AGetOrdersCall.ApiContext.ApiLogManager.RecordMessage(String.Format("Getting item list - SUCCESS, page {0}", Page));
                 Blink();
 
                 foreach (OrderType i in items)
@@ -567,16 +564,16 @@ namespace Utility
                     {
                         res.Add(new Transaction() { OrderID=i.OrderID, TransactionId=j.TransactionID,
                             ItemID=j.Item.ItemID, SellingManagerRecordNumber=i.ShippingDetails.SellingManagerSalesRecordNumber,
-                            CreatedTime=i.CreatedTime });
-                        
-                        apiContext.ApiLogManager.RecordMessage(String.Format("TransactionID {0}\tItem ID{1}\tCreated on {2}",
+                            CreatedTime=i.CreatedTime, OrderStatus=i.OrderStatus });
+
+                        AGetOrdersCall.ApiContext.ApiLogManager.RecordMessage(String.Format("TransactionID {0}\tItem ID{1}\tCreated on {2}",
                             i.OrderID, j.Item.ItemID, i.CreatedTime));
                     }
                 }
                 Blink();
                 
                 Page++;
-            } while (Page <= apiCall.PaginationResult.TotalNumberOfPages);
+            } while (Page <= AGetOrdersCall.PaginationResult.TotalNumberOfPages);
 
             eBayClass.Metrics.GenerateReport(eBayClass.LogManager.ApiLoggerList[0]);
             eBayClass.LogManager.RecordMessage("Done; ms: " + s.ElapsedMilliseconds.ToString());
