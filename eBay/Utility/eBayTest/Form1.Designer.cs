@@ -31,6 +31,12 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.edTransactionID = new System.Windows.Forms.TextBox();
+            this.btnGetOrderTransactions = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.edRecordNumber = new System.Windows.Forms.TextBox();
+            this.btnGetSellingManagerSaleRecord = new System.Windows.Forms.Button();
             this.btnEBayTime = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.edItemId_Get = new System.Windows.Forms.TextBox();
@@ -51,12 +57,8 @@
             this.log = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnClearLog = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.edRecordNumber = new System.Windows.Forms.TextBox();
-            this.btnGetSellingManagerSaleRecord = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.edOrderLineItemID = new System.Windows.Forms.TextBox();
-            this.btnGetOrderTransactions = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.edTranItemID = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -81,7 +83,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.log);
             this.splitContainer1.Panel2.Controls.Add(this.panel1);
             this.splitContainer1.Size = new System.Drawing.Size(815, 389);
-            this.splitContainer1.SplitterDistance = 373;
+            this.splitContainer1.SplitterDistance = 396;
             this.splitContainer1.TabIndex = 1;
             // 
             // tabControl1
@@ -92,13 +94,15 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(373, 389);
+            this.tabControl1.Size = new System.Drawing.Size(396, 389);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.edTranItemID);
+            this.tabPage1.Controls.Add(this.label6);
             this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.edOrderLineItemID);
+            this.tabPage1.Controls.Add(this.edTransactionID);
             this.tabPage1.Controls.Add(this.btnGetOrderTransactions);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.edRecordNumber);
@@ -122,10 +126,62 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(365, 363);
+            this.tabPage1.Size = new System.Drawing.Size(388, 363);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Operations";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(132, 264);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(38, 13);
+            this.label2.TabIndex = 22;
+            this.label2.Text = "ItemID";
+            // 
+            // edTransactionID
+            // 
+            this.edTransactionID.Location = new System.Drawing.Point(292, 259);
+            this.edTransactionID.Name = "edTransactionID";
+            this.edTransactionID.Size = new System.Drawing.Size(88, 20);
+            this.edTransactionID.TabIndex = 21;
+            // 
+            // btnGetOrderTransactions
+            // 
+            this.btnGetOrderTransactions.Location = new System.Drawing.Point(3, 259);
+            this.btnGetOrderTransactions.Name = "btnGetOrderTransactions";
+            this.btnGetOrderTransactions.Size = new System.Drawing.Size(124, 23);
+            this.btnGetOrderTransactions.TabIndex = 20;
+            this.btnGetOrderTransactions.Text = "GetOrderTransactions";
+            this.btnGetOrderTransactions.UseVisualStyleBackColor = true;
+            this.btnGetOrderTransactions.Click += new System.EventHandler(this.btnGetOrderTransactions_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(132, 233);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(52, 13);
+            this.label1.TabIndex = 19;
+            this.label1.Text = "Record #";
+            // 
+            // edRecordNumber
+            // 
+            this.edRecordNumber.Location = new System.Drawing.Point(264, 230);
+            this.edRecordNumber.Name = "edRecordNumber";
+            this.edRecordNumber.Size = new System.Drawing.Size(116, 20);
+            this.edRecordNumber.TabIndex = 18;
+            // 
+            // btnGetSellingManagerSaleRecord
+            // 
+            this.btnGetSellingManagerSaleRecord.Location = new System.Drawing.Point(3, 228);
+            this.btnGetSellingManagerSaleRecord.Name = "btnGetSellingManagerSaleRecord";
+            this.btnGetSellingManagerSaleRecord.Size = new System.Drawing.Size(124, 23);
+            this.btnGetSellingManagerSaleRecord.TabIndex = 17;
+            this.btnGetSellingManagerSaleRecord.Text = "GetSellingManagerSaleRecord";
+            this.btnGetSellingManagerSaleRecord.UseVisualStyleBackColor = true;
+            this.btnGetSellingManagerSaleRecord.Click += new System.EventHandler(this.btnGetSellingManagerSaleRecord_Click);
             // 
             // btnEBayTime
             // 
@@ -140,7 +196,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(151, 202);
+            this.label5.Location = new System.Drawing.Point(132, 202);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(39, 13);
             this.label5.TabIndex = 15;
@@ -148,7 +204,7 @@
             // 
             // edItemId_Get
             // 
-            this.edItemId_Get.Location = new System.Drawing.Point(234, 199);
+            this.edItemId_Get.Location = new System.Drawing.Point(255, 199);
             this.edItemId_Get.Name = "edItemId_Get";
             this.edItemId_Get.Size = new System.Drawing.Size(125, 20);
             this.edItemId_Get.TabIndex = 14;
@@ -157,7 +213,7 @@
             // 
             this.btnGetItemTransactions.Location = new System.Drawing.Point(3, 197);
             this.btnGetItemTransactions.Name = "btnGetItemTransactions";
-            this.btnGetItemTransactions.Size = new System.Drawing.Size(142, 23);
+            this.btnGetItemTransactions.Size = new System.Drawing.Size(124, 23);
             this.btnGetItemTransactions.TabIndex = 13;
             this.btnGetItemTransactions.Text = "GetItemTransactions";
             this.btnGetItemTransactions.UseVisualStyleBackColor = true;
@@ -247,7 +303,7 @@
             // 
             this.btnGetMinimum.Location = new System.Drawing.Point(3, 139);
             this.btnGetMinimum.Name = "btnGetMinimum";
-            this.btnGetMinimum.Size = new System.Drawing.Size(142, 23);
+            this.btnGetMinimum.Size = new System.Drawing.Size(124, 23);
             this.btnGetMinimum.TabIndex = 2;
             this.btnGetMinimum.Text = "Get minimum data";
             this.btnGetMinimum.UseVisualStyleBackColor = true;
@@ -257,7 +313,7 @@
             // 
             this.button1.Location = new System.Drawing.Point(3, 110);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(142, 23);
+            this.button1.Size = new System.Drawing.Size(124, 23);
             this.button1.TabIndex = 1;
             this.button1.Text = "Get # of Orders";
             this.button1.UseVisualStyleBackColor = true;
@@ -267,7 +323,7 @@
             // 
             this.btnGo.Location = new System.Drawing.Point(3, 168);
             this.btnGo.Name = "btnGo";
-            this.btnGo.Size = new System.Drawing.Size(142, 23);
+            this.btnGo.Size = new System.Drawing.Size(124, 23);
             this.btnGo.TabIndex = 0;
             this.btnGo.Text = "GetOrders";
             this.btnGo.UseVisualStyleBackColor = true;
@@ -278,7 +334,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(306, 363);
+            this.tabPage2.Size = new System.Drawing.Size(365, 363);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Utility";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -290,7 +346,7 @@
             this.log.Location = new System.Drawing.Point(0, 0);
             this.log.Name = "log";
             this.log.ReadOnly = true;
-            this.log.Size = new System.Drawing.Size(438, 357);
+            this.log.Size = new System.Drawing.Size(415, 357);
             this.log.TabIndex = 3;
             this.log.Text = "";
             this.log.WordWrap = false;
@@ -301,13 +357,13 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 357);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(438, 32);
+            this.panel1.Size = new System.Drawing.Size(415, 32);
             this.panel1.TabIndex = 4;
             // 
             // btnClearLog
             // 
             this.btnClearLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearLog.Location = new System.Drawing.Point(335, 5);
+            this.btnClearLog.Location = new System.Drawing.Point(312, 5);
             this.btnClearLog.Name = "btnClearLog";
             this.btnClearLog.Size = new System.Drawing.Size(91, 23);
             this.btnClearLog.TabIndex = 0;
@@ -315,57 +371,21 @@
             this.btnClearLog.UseVisualStyleBackColor = true;
             this.btnClearLog.Click += new System.EventHandler(this.btnClearLog_Click);
             // 
-            // label1
+            // label6
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(151, 233);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 13);
-            this.label1.TabIndex = 19;
-            this.label1.Text = "Record #";
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(258, 264);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(28, 13);
+            this.label6.TabIndex = 23;
+            this.label6.Text = "TrID";
             // 
-            // edRecordNumber
+            // edTranItemID
             // 
-            this.edRecordNumber.Location = new System.Drawing.Point(243, 230);
-            this.edRecordNumber.Name = "edRecordNumber";
-            this.edRecordNumber.Size = new System.Drawing.Size(116, 20);
-            this.edRecordNumber.TabIndex = 18;
-            // 
-            // btnGetSellingManagerSaleRecord
-            // 
-            this.btnGetSellingManagerSaleRecord.Location = new System.Drawing.Point(3, 228);
-            this.btnGetSellingManagerSaleRecord.Name = "btnGetSellingManagerSaleRecord";
-            this.btnGetSellingManagerSaleRecord.Size = new System.Drawing.Size(142, 23);
-            this.btnGetSellingManagerSaleRecord.TabIndex = 17;
-            this.btnGetSellingManagerSaleRecord.Text = "GetSellingManagerSaleRecord";
-            this.btnGetSellingManagerSaleRecord.UseVisualStyleBackColor = true;
-            this.btnGetSellingManagerSaleRecord.Click += new System.EventHandler(this.btnGetSellingManagerSaleRecord_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(151, 264);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(84, 13);
-            this.label2.TabIndex = 22;
-            this.label2.Text = "OrderLineItemID";
-            // 
-            // edOrderLineItemID
-            // 
-            this.edOrderLineItemID.Location = new System.Drawing.Point(243, 261);
-            this.edOrderLineItemID.Name = "edOrderLineItemID";
-            this.edOrderLineItemID.Size = new System.Drawing.Size(116, 20);
-            this.edOrderLineItemID.TabIndex = 21;
-            // 
-            // btnGetOrderTransactions
-            // 
-            this.btnGetOrderTransactions.Location = new System.Drawing.Point(3, 259);
-            this.btnGetOrderTransactions.Name = "btnGetOrderTransactions";
-            this.btnGetOrderTransactions.Size = new System.Drawing.Size(142, 23);
-            this.btnGetOrderTransactions.TabIndex = 20;
-            this.btnGetOrderTransactions.Text = "GetOrderTransactions";
-            this.btnGetOrderTransactions.UseVisualStyleBackColor = true;
-            this.btnGetOrderTransactions.Click += new System.EventHandler(this.btnGetOrderTransactions_Click);
+            this.edTranItemID.Location = new System.Drawing.Point(170, 261);
+            this.edTranItemID.Name = "edTranItemID";
+            this.edTranItemID.Size = new System.Drawing.Size(87, 20);
+            this.edTranItemID.TabIndex = 24;
             // 
             // Form1
             // 
@@ -418,8 +438,10 @@
         private System.Windows.Forms.TextBox edRecordNumber;
         private System.Windows.Forms.Button btnGetSellingManagerSaleRecord;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox edOrderLineItemID;
+        private System.Windows.Forms.TextBox edTransactionID;
         private System.Windows.Forms.Button btnGetOrderTransactions;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox edTranItemID;
     }
 }
 
