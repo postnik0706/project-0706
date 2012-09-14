@@ -24,8 +24,10 @@ namespace Utility.Test
         public void GetOrders_Committed_SingleItem_OrderStatus_Active()
         {
             // Arrange
-            IGetOrdersCall eBay = A.Fake<IGetOrdersCall>();
-            A.CallTo(() => eBay.GetOrders(
+            IGetOrdersCall getOrdersCall = A.Fake<IGetOrdersCall>(x => x.OnFakeCreated(
+                t => t.ApiContext.ApiLogManager = new ApiLogManager()));
+
+            A.CallTo(() => getOrdersCall.GetOrders(
                 A<TimeFilter>.Ignored,
                 A<TradingRoleCodeType>.Ignored,
                 A<OrderStatusCodeType>.Ignored)).Returns(
@@ -33,12 +35,26 @@ namespace Utility.Test
                     {
                         new OrderType()
                         {
-                            OrderStatus = OrderStatusCodeType.Active
+                            OrderStatus = OrderStatusCodeType.Active,
+                            TransactionArray = new TransactionTypeCollection()
+                            {
+                                new TransactionType()
+                                {
+                                    Item = new ItemType()
+                                    {
+                                        
+                                    },
+                                    ShippingDetails = new ShippingDetailsType()
+                                    {
+                                        
+                                    }
+                                }
+                            }
                         }
                     });
 
             // Act
-            List<Transaction> rs = eBayClass.GetOrders(eBay,
+            List<Transaction> rs = eBayClass.GetOrders(getOrdersCall,
                 DateTime.Now, DateTime.Now);
 
             // Assert

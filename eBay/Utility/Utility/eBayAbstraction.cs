@@ -13,8 +13,9 @@ namespace Utility
         DetailLevelCodeTypeCollection DetailLevelList { get; set; }
         GetOrdersRequestType ApiRequest { get; set; }
         PaginationType Pagination { get; set; }
-        OrderTypeCollection GetOrders(TimeFilter Filter, TradingRoleCodeType OrderRole, OrderStatusCodeType OrderStatus);
         PaginationResultType PaginationResult { get; }
+        
+        OrderTypeCollection GetOrders(TimeFilter Filter, TradingRoleCodeType OrderRole, OrderStatusCodeType OrderStatus);
     }
 
     public class GetOrdersCall_ : IGetOrdersCall
