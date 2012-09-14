@@ -44,10 +44,7 @@
   <ItemGroup>
     <Compile Include="eBay.cs" />
     <Compile Include="eBayAbstraction.cs" />
-    <Compile Include="PageObjectFactory.cs" />
-    <Compile Include="PageProducer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ThreadedRequest.cs" />
     <Compile Include="Transaction.cs" />
   </ItemGroup>
   <ItemGroup>

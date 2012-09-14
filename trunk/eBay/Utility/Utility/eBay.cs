@@ -495,7 +495,7 @@ namespace Utility
             Blink();
 
             Stopwatch s = Stopwatch.StartNew();
-            GetOrdersCall_ apiCall = new GetOrdersCall_(apiContext);
+            GetOrdersCall apiCall = new GetOrdersCall(apiContext);
             Blink();
 
             apiCall.DetailLevelList = new DetailLevelCodeTypeCollection(new DetailLevelCodeType[] { DetailLevelCodeType.ReturnAll });
@@ -585,15 +585,6 @@ namespace Utility
             Blink();
 
             return res;
-        }
-
-        public static void GetItemList(ApiContext apiContext)
-        {
-            ThreadedRequest req = new ThreadedRequest(apiContext, new EBayPageObjectFactory());
-            foreach (EBayPageProducer item in req.Pages)
-            {
-                apiContext.ApiLogManager.RecordMessage(item.ToString(), MessageType.Information, MessageSeverity.Informational);
-            }
         }
 
         public static void Run()

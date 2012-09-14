@@ -107,7 +107,7 @@ namespace eBayTest
             NormalizeDates(out dtFrom, out dtTo);
             ThreadPool.QueueUserWorkItem(t =>
                 {
-                    tranList = eBayClass.GetOrders(new GetOrdersCall_(eBayClass.SellerContext),
+                    tranList = eBayClass.GetOrders(new Utility.GetOrdersCall(eBayClass.SellerContext),
                         dtFrom, dtTo, cbActive.Checked, cbCompleted.Checked);
                 });
         }
@@ -128,7 +128,7 @@ namespace eBayTest
             NormalizeDates(out dtFrom, out dtTo);
             ThreadPool.QueueUserWorkItem(t =>
                 {
-                    tranList = eBayClass.GetOrders(new GetOrdersCall_(eBayClass.SellerContext),
+                    tranList = eBayClass.GetOrders(new Utility.GetOrdersCall(eBayClass.SellerContext),
                         dtFrom, dtTo, cbActive.Checked, cbCompleted.Checked,
                         true);
                 });
