@@ -55,7 +55,6 @@
             this.btnGetMinimum = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.btnGo = new System.Windows.Forms.Button();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.log = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnClearLog = new System.Windows.Forms.Button();
@@ -88,7 +87,6 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -344,16 +342,6 @@
             this.btnGo.UseVisualStyleBackColor = true;
             this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(388, 363);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Utility";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
             // log
             // 
             this.log.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -410,7 +398,6 @@
 
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Button btnGo;
         private System.Windows.Forms.RichTextBox log;
