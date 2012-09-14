@@ -94,6 +94,10 @@ namespace Utility
         static eBayClass()
         {
             logFileAccess = new AutoResetEvent(false);
+        }
+
+        public static void StartLogMonitor()
+        {
             logFileReader = new AutoResetEvent(false);
         }
 
@@ -480,7 +484,8 @@ namespace Utility
         private static void Blink()
         {
             logFileAccess.Set();
-            logFileReader.WaitOne();
+            if (logFileReader != null)
+                logFileReader.WaitOne();
         }
         
         public static int GetNumberOfItems(ApiContext apiContext,
@@ -563,7 +568,7 @@ namespace Utility
                     foreach (TransactionType j in i.TransactionArray)
                     {
                         res.Add(new Transaction() { OrderID=i.OrderID, TransactionId=j.TransactionID,
-                            ItemID=j.Item.ItemID, SellingManagerRecordNumber=i.ShippingDetails.SellingManagerSalesRecordNumber,
+                            ItemID=j.Item.ItemID, SellingManagerRecordNumber=j.ShippingDetails.SellingManagerSalesRecordNumber,
                             CreatedTime=i.CreatedTime, OrderStatus=i.OrderStatus });
 
                         AGetOrdersCall.ApiContext.ApiLogManager.RecordMessage(String.Format("TransactionID {0}\tItem ID{1}\tCreated on {2}",

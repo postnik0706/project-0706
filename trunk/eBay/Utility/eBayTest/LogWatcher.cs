@@ -14,10 +14,10 @@ namespace eBayTest
 
         public string Filename { get; set; }
         public RichTextBox Control { get; set; }
-        public Form1 Parent { get; set; }
+        public TestUtility Parent { get; set; }
         public bool Quit { get; set; }
 
-        public LogWatcher(string Filename, Form1 Parent, RichTextBox Control)
+        public LogWatcher(string Filename, TestUtility Parent, RichTextBox Control)
         {
             this.Filename = Filename;
             this.Control = Control;

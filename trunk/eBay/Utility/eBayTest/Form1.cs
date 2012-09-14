@@ -17,13 +17,13 @@ namespace eBayTest
 {
     public delegate void RefreshControlEvent(string Contents);
 
-    public partial class Form1 : Form
+    public partial class TestUtility : Form
     {
         LogWatcher logWatcher;
         public RefreshControlEvent OnRefresh;
         private List<Transaction> tranList;
 
-        public Form1()
+        public TestUtility()
         {
             InitializeComponent();
         }
@@ -46,8 +46,8 @@ namespace eBayTest
         private void Form1_Load(object sender, EventArgs e)
         {
             OnRefresh = new RefreshControlEvent(RefreshControl);
-            logWatcher = new LogWatcher(ConfigurationManager.AppSettings["eBayLogger"],
-                this, log);
+            logWatcher = new LogWatcher(ConfigurationManager.AppSettings["eBayLogger"], this, log);
+            eBayClass.StartLogMonitor();
             tranList = new List<Transaction>();
             eBayClass.LogFileAccess.Set();
         }
