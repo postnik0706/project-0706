@@ -1,0 +1,9 @@
+How to create a store in sandbox:
+
+http://developer.ebay.com/DevZone/XML/docs/WebHelp/wwhelp/wwhimpl/common/html/wwhelp.htm?context=eBay_XML_API&file=DevAndTestApplications-Testing_Applications.html
+
+http://stores.sandbox.ebay.com/
+
+
+
+http://docs.polishedgeek.com/wiki/display/JL/How+to+set+up+an+eBay+Sandbox+Storefront
