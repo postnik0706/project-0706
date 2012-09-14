@@ -18,22 +18,25 @@ namespace Utility
         OrderTypeCollection GetOrders(TimeFilter Filter, TradingRoleCodeType OrderRole, OrderStatusCodeType OrderStatus);
     }
 
-    public class GetOrdersCall_ : IGetOrdersCall
+    public class GetOrdersCall : IGetOrdersCall
     {
-        ApiContext apiContext;
-        GetOrdersCall ebayGetOrdersCall;
+        eBay.Service.Call.GetOrdersCall ebayGetOrdersCall;
 
-        public GetOrdersCall_(ApiContext ApiContext)
+        public GetOrdersCall()
         {
-            apiContext = ApiContext;
-            ebayGetOrdersCall = new GetOrdersCall(ApiContext);
+            ebayGetOrdersCall = new eBay.Service.Call.GetOrdersCall();
+        }
+
+        public GetOrdersCall(ApiContext ApiContext)
+        {
+            ebayGetOrdersCall = new eBay.Service.Call.GetOrdersCall(ApiContext);
         }
 
         public ApiContext ApiContext
         {
             get
             {
-                return apiContext;
+                return ebayGetOrdersCall.ApiContext;
             }
         }
         
