@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -20,6 +21,7 @@ namespace Netflix
 
         public string NormalizedUrl { get { return m_strNormalizedUrl; } }
         public string NormalizedRequestParameters { get { return m_strNormalizedRequestParameters; } }
+        public NameValueCollection TokenResponse { get; set; }
 
         public Form1()
         {
@@ -38,29 +40,52 @@ namespace Netflix
             edNormalizedURL.Text = NormalizedUrl;
             edParameters.Text = NormalizedRequestParameters;
 
-            string request;
+            string strTokenResponse;
             using (WebClient w = new WebClient())
             {
-                request = w.DownloadString(NormalizedUrl + "?" + NormalizedRequestParameters +
+                strTokenResponse = w.DownloadString(NormalizedUrl + "?" + NormalizedRequestParameters +
                     "&oauth_signature=" + HttpUtility.UrlEncode(token));
             }
-            edRequest.Text = request;
+            edRequest.Text = strTokenResponse;
+            
+            TokenResponse = HttpUtility.ParseQueryString(strTokenResponse);
+            edSecretToken.Text = TokenResponse["oauth_token_secret"];
 
-
-/*
-            var parameters = HttpUtility.ParseQueryString(NormalizedRequestParameters);
-            string requestString = ConfigurationManager.AppSettings["netFlixLoginUrl"] + "?" +
-                "oauth_token=" + parameters["oauth_token"] +
-                "&oauth_consumer_key=" + HttpUtility.UrlEncode(ConfigurationManager.AppSettings["consumerKey"]) +
-                "&application_name=" + parameters["application_name"] +
-                "&oauth_callback=" + HttpUtility.UrlEncode(ConfigurationManager.AppSettings["OAuthCallback"]);
-            edURL.Text = requestString;
- */
+            string signInRequest = ConfigurationManager.AppSettings["netFlixLoginUrl"] + "?" +
+                "oauth_token=" + TokenResponse["oauth_token"] +
+                "&application_name=" + TokenResponse["application_name"] +
+                "&oauth_callback=" + HttpUtility.UrlEncode(ConfigurationManager.AppSettings["OAuthCallback"]) +
+                "&oauth_consumer_key=" + HttpUtility.UrlEncode(ConfigurationManager.AppSettings["consumerKey"]);
+            edURL.Text = signInRequest;
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(edURL.Text);
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            string accessSecret = ConfigurationManager.AppSettings["sharedSecret"] +
+                TokenResponse["oauth_token_secret"];
+            
+            OAuthBase oAuth = new OAuthBase();
+            string m_strNormalizedUrl, m_strNormalizedRequestParameters;
+            string accessToken = oAuth.GenerateSignature(new Uri(ConfigurationManager.AppSettings["netFlixAccessToken"]),
+                ConfigurationManager.AppSettings["consumerKey"],
+                accessSecret,
+                TokenResponse["oauth_token"],
+                TokenResponse["oauth_token_secret"],
+                "GET", oAuth.GenerateTimeStamp(), oAuth.GenerateNonce(),
+                out m_strNormalizedUrl, out m_strNormalizedRequestParameters);
+
+            string accessTokenResponse = "";
+            using (WebClient w = new WebClient())
+            {
+                accessTokenResponse = w.DownloadString(NormalizedUrl + "?" + NormalizedRequestParameters +
+                    "&oauth_signature=" + HttpUtility.UrlEncode(accessToken));
+            }
+            edAccessToken.Text = accessTokenResponse;
         }
     }
 }
