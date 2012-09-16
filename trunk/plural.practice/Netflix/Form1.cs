@@ -11,17 +11,14 @@ using OAuth;
 using System.Configuration;
 using System.Web;
 using System.Net;
+using System.IO;
 
 namespace Netflix
 {
     public partial class Form1 : Form
     {
-        string m_strNormalizedUrl;
-        string m_strNormalizedRequestParameters;
-
-        public string NormalizedUrl { get { return m_strNormalizedUrl; } }
-        public string NormalizedRequestParameters { get { return m_strNormalizedRequestParameters; } }
-        public NameValueCollection TokenResponse { get; set; }
+        public string Token { get; set; }
+        public string TokenSecret { get; set; }
 
         public Form1()
         {
@@ -30,33 +27,18 @@ namespace Netflix
 
         private void button1_Click(object sender, EventArgs e)
         {
-            OAuthBase oAuth = new OAuthBase();
-            string token = oAuth.GenerateSignature(new Uri(ConfigurationManager.AppSettings["netflixUrl"]),
-                ConfigurationManager.AppSettings["consumerKey"],
-                ConfigurationManager.AppSettings["sharedSecret"],
-                null, null, "GET", oAuth.GenerateTimeStamp(), oAuth.GenerateNonce(),
-                out m_strNormalizedUrl, out m_strNormalizedRequestParameters);
-            edToken.Text = token;
-            edNormalizedURL.Text = NormalizedUrl;
-            edParameters.Text = NormalizedRequestParameters;
+            if (File.Exists(accessTokenFilename))
+                File.Delete(accessTokenFilename);
 
-            string strTokenResponse;
-            using (WebClient w = new WebClient())
-            {
-                strTokenResponse = w.DownloadString(NormalizedUrl + "?" + NormalizedRequestParameters +
-                    "&oauth_signature=" + HttpUtility.UrlEncode(token));
-            }
-            edRequest.Text = strTokenResponse;
-            
-            TokenResponse = HttpUtility.ParseQueryString(strTokenResponse);
-            edSecretToken.Text = TokenResponse["oauth_token_secret"];
-
-            string signInRequest = ConfigurationManager.AppSettings["netFlixLoginUrl"] + "?" +
-                "oauth_token=" + TokenResponse["oauth_token"] +
-                "&application_name=" + TokenResponse["application_name"] +
-                "&oauth_callback=" + HttpUtility.UrlEncode(ConfigurationManager.AppSettings["OAuthCallback"]) +
-                "&oauth_consumer_key=" + HttpUtility.UrlEncode(ConfigurationManager.AppSettings["consumerKey"]);
-            edURL.Text = signInRequest;
+            var req = OAuthUtility.GenerateTokenRequest();
+            Token = req.Token;
+            edToken.Text = Token;
+            TokenSecret = req.TokenSecret;
+            edTokenSecret.Text = TokenSecret;
+            edNormalizedURL.Text = req.Url;
+            edParameters.Text = req.Parameters;
+            edRequest.Text = req.Token;
+            edURL.Text = req.SignInRequest;
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -66,26 +48,33 @@ namespace Netflix
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            string accessSecret = ConfigurationManager.AppSettings["sharedSecret"] +
-                TokenResponse["oauth_token_secret"];
-            
+            string accessToken = OAuthUtility.GenerateToken(Token, TokenSecret);
+            File.WriteAllText(OAuthUtility.AccessTokenFilename, accessToken);
+        }
+
+        private void btnMakeACall_Click(object sender, EventArgs e)
+        {
+            //string command = "current";
+            string command = accessResponse["user_id"];
+
             OAuthBase oAuth = new OAuthBase();
             string m_strNormalizedUrl, m_strNormalizedRequestParameters;
-            string accessToken = oAuth.GenerateSignature(new Uri(ConfigurationManager.AppSettings["netFlixAccessToken"]),
+            string accessToken = oAuth.GenerateSignature(
+                new Uri(ConfigurationManager.AppSettings["netFlixEndpoint"] + command),
                 ConfigurationManager.AppSettings["consumerKey"],
-                accessSecret,
-                TokenResponse["oauth_token"],
-                TokenResponse["oauth_token_secret"],
+                ConfigurationManager.AppSettings["sharedSecret"],
+                accessResponse["oauth_token"],
+                accessResponse["oauth_token_secret"],
                 "GET", oAuth.GenerateTimeStamp(), oAuth.GenerateNonce(),
                 out m_strNormalizedUrl, out m_strNormalizedRequestParameters);
 
-            string accessTokenResponse = "";
             using (WebClient w = new WebClient())
             {
-                accessTokenResponse = w.DownloadString(NormalizedUrl + "?" + NormalizedRequestParameters +
-                    "&oauth_signature=" + HttpUtility.UrlEncode(accessToken));
+                string callRequest = m_strNormalizedUrl + "?" + m_strNormalizedRequestParameters +
+                    "&oauth_signature=" + HttpUtility.UrlEncode(accessToken);
+                string strCallResponse = w.DownloadString(callRequest);
+                edResponse.Text = strCallResponse;
             }
-            edAccessToken.Text = accessTokenResponse;
         }
     }
 }
