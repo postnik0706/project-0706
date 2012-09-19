@@ -27,8 +27,8 @@ namespace Netflix
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (File.Exists(accessTokenFilename))
-                File.Delete(accessTokenFilename);
+            if (File.Exists(OAuthUtility.AccessTokenFilename))
+                File.Delete(OAuthUtility.AccessTokenFilename);
 
             var req = OAuthUtility.GenerateTokenRequest();
             Token = req.Token;
@@ -49,32 +49,28 @@ namespace Netflix
         private void button1_Click_1(object sender, EventArgs e)
         {
             string accessToken = OAuthUtility.GenerateToken(Token, TokenSecret);
-            File.WriteAllText(OAuthUtility.AccessTokenFilename, accessToken);
+            Directory.CreateDirectory(Path.GetDirectoryName(OAuthUtility.AccessTokenFilename));
+            using (FileStream fs = new FileStream(OAuthUtility.AccessTokenFilename, FileMode.OpenOrCreate))
+            {
+                using (TextWriter tr = new StreamWriter(fs))
+                {
+                    tr.Write(accessToken);
+                }
+            }
         }
 
         private void btnMakeACall_Click(object sender, EventArgs e)
         {
-            //string command = "current";
-            string command = accessResponse["user_id"];
+            NameValueCollection accessResponse = HttpUtility.ParseQueryString(
+                File.ReadAllText(OAuthUtility.AccessTokenFilename));
 
-            OAuthBase oAuth = new OAuthBase();
-            string m_strNormalizedUrl, m_strNormalizedRequestParameters;
-            string accessToken = oAuth.GenerateSignature(
-                new Uri(ConfigurationManager.AppSettings["netFlixEndpoint"] + command),
-                ConfigurationManager.AppSettings["consumerKey"],
-                ConfigurationManager.AppSettings["sharedSecret"],
-                accessResponse["oauth_token"],
-                accessResponse["oauth_token_secret"],
-                "GET", oAuth.GenerateTimeStamp(), oAuth.GenerateNonce(),
-                out m_strNormalizedUrl, out m_strNormalizedRequestParameters);
-
-            using (WebClient w = new WebClient())
-            {
-                string callRequest = m_strNormalizedUrl + "?" + m_strNormalizedRequestParameters +
-                    "&oauth_signature=" + HttpUtility.UrlEncode(accessToken);
-                string strCallResponse = w.DownloadString(callRequest);
-                edResponse.Text = strCallResponse;
-            }
+            //string command = "users/current";
+            //string command = "users/" + accessResponse["user_id"];
+            //string command = "catalog/titles?term=" + HttpUtility.UrlEncode("Jackie,Chan") + "&start_index=0&max_results=100";
+            string command = "catalog/people?term=Jackie Chan&start_index=0&max_results=100";
+            
+            string result = OAuthUtility.MakeACall(command);
+            edResponse.Text = result;
         }
     }
 }
