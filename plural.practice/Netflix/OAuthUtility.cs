@@ -22,7 +22,15 @@ namespace Netflix
     
     class OAuthUtility
     {
-        public const string AccessTokenFilename = "accessToken";
+        public const string strCACHE_PATH = "\\My Test Netflix Account\\";
+
+        public static string AccessTokenFilename
+        {
+            get
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + strCACHE_PATH + "accessToken.toc";
+            }
+        }
 
         internal static ProtectedRequest GenerateTokenRequest()
         {
@@ -79,10 +87,40 @@ namespace Netflix
             return accessTokenResponse;
         }
 
-        internal static string MakeACall()
+        internal static string MakeACall(string Command)
         {
             NameValueCollection accessResponse = HttpUtility.ParseQueryString(
                 File.ReadAllText(AccessTokenFilename));
+
+            OAuthBase oAuth = new OAuthBase();
+            string m_strNormalizedUrl, m_strNormalizedRequestParameters;
+            string accessToken = oAuth.GenerateSignature(
+                new Uri(ConfigurationManager.AppSettings["netFlixCallApi"] + "/" + Command),
+                ConfigurationManager.AppSettings["consumerKey"],
+                ConfigurationManager.AppSettings["sharedSecret"],
+                accessResponse["oauth_token"],
+                accessResponse["oauth_token_secret"],
+                "GET", oAuth.GenerateTimeStamp(), oAuth.GenerateNonce(),
+                out m_strNormalizedUrl, out m_strNormalizedRequestParameters);
+
+            using (WebClient w = new WebClient())
+            {
+                string callRequest = m_strNormalizedUrl + "?" + m_strNormalizedRequestParameters +
+                    "&oauth_signature=" + HttpUtility.UrlEncode(accessToken);
+                string strCallResponse = w.DownloadString(callRequest);
+
+                if (!Directory.Exists(Environment.SpecialFolder.MyDocuments + strCACHE_PATH))
+                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + strCACHE_PATH);
+                using (FileStream f = new FileStream(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + strCACHE_PATH + "LastResponse.xml", FileMode.OpenOrCreate))
+                {
+                    using (StreamWriter writer = new StreamWriter(f))
+                    {
+                        writer.Write(strCallResponse);
+                    }
+                }
+
+                return strCallResponse;
+            }
         }
     }
 }
