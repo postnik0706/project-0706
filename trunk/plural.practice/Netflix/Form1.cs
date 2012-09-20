@@ -57,6 +57,7 @@ namespace Netflix
                     tr.Write(accessToken);
                 }
             }
+            edAccessToken.Text = accessToken;
         }
 
         private void btnMakeACall_Click(object sender, EventArgs e)
@@ -66,8 +67,9 @@ namespace Netflix
 
             //string command = "users/current";
             //string command = "users/" + accessResponse["user_id"];
-            //string command = "catalog/titles?term=" + HttpUtility.UrlEncode("Jackie,Chan") + "&start_index=0&max_results=100";
-            string command = "catalog/people?term=Jackie Chan&start_index=0&max_results=100";
+            string command = "catalog/titles?term=Jackie Chan&start_index=0&max_results=100";
+            //string command = "catalog/people?term=Jackie Chan&start_index=0&max_results=100";
+            //string command = "catalog/people/30004299/filmography";
             
             string result = OAuthUtility.MakeACall(command);
             edResponse.Text = result;
