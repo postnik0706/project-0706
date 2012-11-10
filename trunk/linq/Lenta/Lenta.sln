@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lenta", "app_3\lenta.csproj", "{D9C485AD-0B68-42C4-B61C-4793EB8093F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lenta", "Lenta\lenta.csproj", "{D9C485AD-0B68-42C4-B61C-4793EB8093F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
