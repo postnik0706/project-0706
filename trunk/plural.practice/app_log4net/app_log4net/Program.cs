@@ -10,7 +10,7 @@ namespace app_log4net
         
         static void Main(string[] args)
         {
-            XmlConfigurator.Configure(new System.IO.FileInfo("app_log4net.exe.config"));
+//            XmlConfigurator.Configure(new System.IO.FileInfo("app_log4net.exe.config"));
 
             log.Info("Entering app");
             Bar bar = new Bar();
