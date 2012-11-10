@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gameWikiQuery", "app_1\gameWikiQuery.csproj", "{3BF838F5-F302-4B5D-A2CB-12394E029FE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gameWikiQuery", "GameWikiQuery\gameWikiQuery.csproj", "{3BF838F5-F302-4B5D-A2CB-12394E029FE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gameWikiQuery.Tests", "TestProject1\gameWikiQuery.Tests.csproj", "{DD5DEB7D-D813-493F-A98C-5958B693539E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gameWikiQuery.Tests", "gameWikiQuery.Tests\gameWikiQuery.Tests.csproj", "{DD5DEB7D-D813-493F-A98C-5958B693539E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AD209963-8E75-4A36-B80E-7DB80EF79A08}"
 	ProjectSection(SolutionItems) = preProject

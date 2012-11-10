@@ -49,7 +49,7 @@
     <Compile Include="UnitTest1.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\app_1\app_1.csproj">
+    <ProjectReference Include="..\gameWikiQuery\gameWikiQuery.csproj">
       <Project>{3BF838F5-F302-4B5D-A2CB-12394E029FE5}</Project>
       <Name>app_1</Name>
     </ProjectReference>
