@@ -1,0 +1,12 @@
+﻿<SHIPGEARHISTORY ShipmentID="1ZT788870200001193" LastAction="Create" SGID="SG90101O_0001174" 
+				 VoidFlag="False" FSI_ID="90" CompanyID="101" Document="Sales Orders" DocumentKey="0001174" 
+				 DocumentKey2="" NumberOfPackages="1" RateRuleApplied="" FreightCharges="65.95" ShipDate="2/14/2013 12:01:02 AM" 
+				 CustomerName="Irvine Warehouse" FSCompanyName="(ABC) ABC Distribution and Service Corp." Workstation="DEV08" 
+				 AddedNotes="True" AddedFreight="False" NotesText="this is a test" Carrier="UPS" Service="UPS2ndDayAir" Reference="0001174">
+	<SHIPMENTINFO  SG_ID="123" Voided="True" LastAction="Create">
+	</SHIPMENTINFO>
+	<PACKAGE  SG_ID="" Voided="False" LastAction="Create" Carrier="UPS" TrackingNumber="1ZT788870200001193" PackageType="Unknown"
+			  PackageWeight="12.00" PackageWeightUM="KG" Reference="" DeclaredValue="0.99" DimHeight="4.11" DimWidth="2.01"
+			  DimLength="1.99" WeightUOM="LBS" DimUOM="Inches">
+	</PACKAGE>
+</SHIPGEARHISTORY>

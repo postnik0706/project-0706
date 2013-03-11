@@ -1,0 +1,49 @@
+<SHIPGEARHISTORY ShipmentID="1ZT788870200001193" LastAction="Create" SGID="SG90101O_0001174" VoidFlag="False" FSI_ID="90" CompanyID="101" Document="Sales Orders" DocumentKey="0001174" DocumentKey2="" NumberOfPackages="1" RateRuleApplied="" FreightCharges="65.95" ShipDate="2/14/2013 12:00:00 AM" CustomerName="Irvine Warehouse" FSCompanyName="(ABC) ABC Distribution and Service Corp." Workstation="DEV08" AddedNotes="False" AddedFreight="False" NotesText="" Carrier="UPS" Service="UPS2ndDayAir" Reference="0001174">
+  <SHIPMENTINFO  SG_ID="" Voided="False" LastAction="Create">
+    <SHIPMENTHEADER  SG_ID="" Voided="False" LastAction="Create" Carrier="UPS" TrackingNumber="1ZT788870200001193" ShipDate="12/30/1899 12:00:00 AM" ServiceType="UPS2ndDayAir" PaymentType="Unknown" SignatureReleaseNumber="" NumberOfPackages="1" PackageContents1="" PackageContents2="" ZoneID="0">
+      <SENDER  SG_ID="" Voided="False" LastAction="Create" AddressType="Sender" Code="" AccountNumber="" Phone="" Fax="" Email="">
+        <ADDRESS  SG_ID="" Voided="False" LastAction="Create" AddressType="Sender" Company="" Contact="" Department="" AddrLine1="" AddrLine2="" AddrLine3="" City="" State="" ZIP="" Country="" Residential="False"> </ADDRESS>
+      </SENDER>
+
+      <RECIPIENT  SG_ID="" Voided="False" LastAction="Create" AddressType="Recipient" Code="" AccountNumber="" Phone="" Fax="" Email="">
+        <ADDRESS  SG_ID="" Voided="False" LastAction="Create" AddressType="Recipient" Company="" Contact="" Department="" AddrLine1="" AddrLine2="" AddrLine3="" City="" State="" ZIP="" Country="" Residential="False"> </ADDRESS>
+      </RECIPIENT>
+
+      <HOLDATLOCATION  SG_ID="" Voided="False" LastAction="Create" AddressType="HAL" Code="" AccountNumber="" Phone="" Fax="" Email="" Contact="">
+        <ADDRESS  SG_ID="" Voided="False" LastAction="Create" AddressType="HAL" Company="" Contact="" Department="" AddrLine1="" AddrLine2="" AddrLine3="" City="" State="" ZIP="" Country="" Residential="False"> </ADDRESS>
+      </HOLDATLOCATION>
+
+      <CODREMITTANCE  SG_ID="" Voided="False" LastAction="Create" AddressType="COD" Code="" AccountNumber="" Phone="" Fax="" Email="">
+        <ADDRESS  SG_ID="" Voided="False" LastAction="Create" AddressType="COD" Company="" Contact="" Department="" AddrLine1="" AddrLine2="" AddrLine3="" City="" State="" ZIP="" Country="" Residential="False"> </ADDRESS>
+      </CODREMITTANCE>
+
+      <SENDERNOTIFICATION  SG_ID="" Voided="False" LastAction="Create" Email="" Fax="" ShipNotification="False" ExceptionNotification="False" DeliveryNotification="False" ShipMemo="" DeliveryMemo=""> </SENDERNOTIFICATION>
+
+      <RECIPIENTNOTIFICATION  SG_ID="" Voided="False" LastAction="Create" Email="" Fax="" ShipNotification="False" ExceptionNotification="False" DeliveryNotification="False" ShipMemo="" DeliveryMemo=""> </RECIPIENTNOTIFICATION>
+
+      <OTHER1NOTIFICATION  SG_ID="" Voided="False" LastAction="Create" Email="" Fax="" ShipNotification="False" ExceptionNotification="False" DeliveryNotification="False" ShipMemo="" DeliveryMemo=""> </OTHER1NOTIFICATION>
+
+      <OTHER2NOTIFICATION  SG_ID="" Voided="False" LastAction="Create" Email="" Fax="" ShipNotification="False" ExceptionNotification="False" DeliveryNotification="False" ShipMemo="" DeliveryMemo=""> </OTHER2NOTIFICATION>
+    </SHIPMENTHEADER>
+
+    <PACKAGE  SG_ID="" Voided="False" LastAction="Create" Carrier="UPS" TrackingNumber="1ZT788870200001193" PackageType="Unknown" PackageWeight="12.00" PackageWeightUM="" Reference="" DeclaredValue="0.00" DimHeight="0" DimWidth="0" DimLength="0" WeightUOM="LBS" DimUOM="Inches">
+      <CHARGES  SG_ID="" Voided="False" LastAction="Create">
+        <FDX  SG_ID="" Voided="False" LastAction="Create" NetCharge="0.00" GrossCharge="0.00" ListNetCharge="0.00" ListGrossCharge="0.00" TotalDiscount="0.00" DeclaredValueSurcharge="0.00" FuelSurcharge="0.00" DeliveryAreaSurcharge="0.00" InsideDeliverySurcharge="0.00" InsidePickupSurcharge="0.00" PriorityAlertSurcharge="0.00" ResidentialRuralSurcharge="0.00" ResidentialSurcharge="0.00" SaturdayDeliverySurcharge="0.00" ShipmentNotificationSurcharge="0.00" TotalSurcharge="0.00" AppointmentDeliverySurcharge="0.00" DateCertainDeliverySurcharge="0.00" EveningDeliverySurcharge="0.00" SignatureServiceSurcharge="0.00" NonStandardContainerSurcharge="0.00" CODSurcharge="0.00" SaturdayPickupSurcharge="0.00" OutOfPickupAreaSurcharge="0.00" OutOfDeliveryAreaSurcharge="0.00" OffshoreSurcharge="0.00" AlaskaSurcharge="0.00" HawaiiSurcharge="0.00" DangerousGoodHazardousSurcharge="0.00" ChargesSignatureOptions="0.00" List_HandlingCharge="0.00" Customer_HandlingCharge="0.00" SpecialServices_HandlingCharge="0.00" SpecialServices_VariableHandlingCharge="0.00" List_Total_Customer_Charge="0.00" Customer_Total_Customer_Charge="0.00"> </FDX>
+      </CHARGES>
+
+      <PACKAGEINFO  SG_ID="" Voided="False" LastAction="Create">
+        <FDX  SG_ID="" Voided="False" LastAction="Create" DepartmentCode="" DepartmentNotes="" FXGPONbr="" FXGInvoiceNbr="">
+          <SPECIALSERVICES  SG_ID="" Voided="False" LastAction="Create" AlcoholFlag="False" AlcoholPackages="0" AlcoholVolume="0.00" AlcoholPackagingType="Unknown" AlcoholType="Unknown" ResidentialDeliveryFlag="False" InsidePickupFlag="False" InsideDeliveryFlag="False" OverSizeFlag="False" SaturdayDeliveryFlag="False" SaturdayPickupFlag="False" BlockShipData="False" NonStandardContainer="False" CODFlag="False" HazMatFlag="False" HomeDeliveryFlag="False" DryIceFlag="False" DryIceWeight="0.00" HALFlag="False" HandlingChargeAmount="0.00" HandlingChargeType="Unknown" VariableHandlingChargeType="Unknown" SignatureOptions="Unknown">
+            <COD  SG_ID="" Voided="False" LastAction="Create" Amount="0.00" CollectionType="Unknown" ChargeType="Unknown" Reference="" ECODFlag="False"> </COD>
+
+            <HOMEDELIVERY  SG_ID="" Voided="False" LastAction="Create" Instructions="" DeliveryType="Unknown" Phone="" DeliveryDate="12/30/1899 12:00:00 AM" AlternativePhoneNumber=""> </HOMEDELIVERY>
+          </SPECIALSERVICES>
+        </FDX>
+
+        <UPS  SG_ID="" Voided="False" LastAction="Create" CODFlag="False">
+          <COD  SG_ID="" Voided="False" LastAction="Create" Amount="0.00" CollectionType="Unknown" ChargeType="Unknown" Reference="" ECODFlag="False"> </COD>
+        </UPS>
+      </PACKAGEINFO>
+    </PACKAGE>
+  </SHIPMENTINFO>
+</SHIPGEARHISTORY>
