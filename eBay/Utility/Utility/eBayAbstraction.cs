@@ -13,30 +13,26 @@ namespace Utility
         DetailLevelCodeTypeCollection DetailLevelList { get; set; }
         GetOrdersRequestType ApiRequest { get; set; }
         PaginationType Pagination { get; set; }
-        PaginationResultType PaginationResult { get; }
-        
         OrderTypeCollection GetOrders(TimeFilter Filter, TradingRoleCodeType OrderRole, OrderStatusCodeType OrderStatus);
+        PaginationResultType PaginationResult { get; }
     }
 
-    public class GetOrdersCall : IGetOrdersCall
+    public class GetOrdersCall_ : IGetOrdersCall
     {
-        eBay.Service.Call.GetOrdersCall ebayGetOrdersCall;
+        ApiContext apiContext;
+        GetOrdersCall ebayGetOrdersCall;
 
-        public GetOrdersCall()
+        public GetOrdersCall_(ApiContext ApiContext)
         {
-            ebayGetOrdersCall = new eBay.Service.Call.GetOrdersCall();
-        }
-
-        public GetOrdersCall(ApiContext ApiContext)
-        {
-            ebayGetOrdersCall = new eBay.Service.Call.GetOrdersCall(ApiContext);
+            apiContext = ApiContext;
+            ebayGetOrdersCall = new GetOrdersCall(ApiContext);
         }
 
         public ApiContext ApiContext
         {
             get
             {
-                return ebayGetOrdersCall.ApiContext;
+                return apiContext;
             }
         }
         
