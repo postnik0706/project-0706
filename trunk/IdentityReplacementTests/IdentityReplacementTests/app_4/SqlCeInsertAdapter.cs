@@ -32,6 +32,24 @@ namespace app_4
                 Type.Name, Parent.Name));
         }
 
+        private void FillInProperty(PropertyInfo property, int ordinal, SqlCeUpdatableRecord record, object value)
+        {
+            if (value.GetType() == typeof(bool)) record.SetBoolean(ordinal, (bool)value);
+            else if (value.GetType() == typeof(Int16)) record.SetInt16(ordinal, (Int16)value);
+            else if (value.GetType() == typeof(Int32)) record.SetInt32(ordinal, (Int32)value);
+            else if (value.GetType() == typeof(Int16)) record.SetInt64(ordinal, (Int16)value);
+        }
+        
+        private void FillInShipment(Shipment shipment, SqlCeUpdatableRecord record)
+        {
+            foreach (PropertyInfo item in shipment.GetType().GetProperties())
+	        {
+                item.SetValue(shipment, item.  null);
+                FillInProperty<item.GetType()>
+                item.Name
+	        } 
+        }
+
         /// <summary>
         /// Returns generated Id.
         /// </summary>
