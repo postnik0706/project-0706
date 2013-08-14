@@ -12,6 +12,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Data.Entity.Infrastructure;
 using System.Data.Objects;
+using System.Data.SqlServerCe;
 
 namespace tests
 {
@@ -442,6 +443,7 @@ namespace tests
 
                         // Protected object save.
                         context.Level1.Add(level1);
+                        context.SaveChanges();
 
                         // Protected new Id values write.
                         ids.WriteToDatabase(context);
@@ -494,25 +496,38 @@ namespace tests
                     using (Levels context = new Levels())
                     {
                         ev.Wait();
-                        Test_Identities_Stored_In_The_Database(t => ms1 = t, readSynchronization, writeSynchronization, processSynchronization);
-                        Trace.WriteLine("[Thread {0}] fires up", Thread.CurrentThread.ManagedThreadId.ToString());
+                        Test_Identities_Stored_In_The_Database(t => ms1 += t, readSynchronization, writeSynchronization, processSynchronization);
+                        Trace.WriteLine(string.Format("[Thread {0}]: elapsed {1}", Thread.CurrentThread.ManagedThreadId.ToString(), (ms1 /1000.00).ToString()));
                     }
                 });
 
-            using (new MetricTracker("Starting multiple threads", t => ms = t))
+            const int NUM_TASKS = 20;
+
+            using (new MetricTracker("Starting multiple threads", t => ms += t))
             {
-                Task[] tasks = new Task[] {
-                    new TaskFactory().StartNew(a),
-                    new TaskFactory().StartNew(a),
-                    new TaskFactory().StartNew(a),
-                    new TaskFactory().StartNew(a)
-                    /*new TaskFactory().StartNew(a) */};
+                List<Task> tasks = new List<Task>();
+                for (int i = 0; i < NUM_TASKS; i++)
+                {
+                    tasks.Add(new TaskFactory().StartNew(a));
+                }
                 ev.Set();
 
-                Task.WaitAll(tasks);
+                Task.WaitAll(tasks.ToArray());
             }
 
-            ms.Should().BeLessThan(1440);
+            Console.WriteLine("Elapsed: {0}", (ms1 / 1000.00).ToString());
+            ms1.Should().BeLessThan(17900);
+
+            using (Levels context = new Levels())
+            {
+                LevelIdentityFactory ids = new LevelIdentityFactory(readSynchronization, writeSynchronization, processSynchronization);
+                ids.ReadFromDatabase(context);
+                ids.Identities["Level1"].Should().Be(NUM_TASKS + 1);        // + "A"
+                ids.Identities["Level2"].Should().Be(NUM_TASKS * 5 + 1);        // + 1 extra number per each insert
+                ids.Identities["Level3"].Should().Be(NUM_TASKS * 25 + 1);       // + 1 extra number per each insert
+                ids.Identities["Level4"].Should().Be(NUM_TASKS * 250 + 1);      // + 1 extra number per each insert
+                ids.Identities["Level5"].Should().Be(NUM_TASKS * 2500 + 1);     // + 1 extra number per each insert
+            }
         }
     }
 }

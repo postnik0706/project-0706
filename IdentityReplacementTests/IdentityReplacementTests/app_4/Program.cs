@@ -107,7 +107,7 @@ namespace app_4
             if (File.Exists(DB_FILE))
                 File.Delete(DB_FILE);
         
-            //BatchTest();
+            BatchTest();
 
             /*using (Levels context = new Levels())
             {

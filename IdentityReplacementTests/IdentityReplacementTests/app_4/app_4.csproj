@@ -44,6 +44,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -51,10 +52,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SqlCeInsertAdapter.cs" />
     <Compile Include="entities.cs" />
     <Compile Include="ObjectWalker.cs" />
+    <Compile Include="Ordinal.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShipGear.cs" />
+    <Compile Include="ShipGearEnums.cs" />
+    <Compile Include="SqlCeInsertAdapterLevels.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
