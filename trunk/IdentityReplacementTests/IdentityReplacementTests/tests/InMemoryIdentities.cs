@@ -17,7 +17,7 @@ using System.Data.SqlServerCe;
 namespace tests
 {
     [TestClass]
-    public class UnitTest1
+    public class InMemoryIdentities
     {
         [TestInitialize]
         public void Startup()
