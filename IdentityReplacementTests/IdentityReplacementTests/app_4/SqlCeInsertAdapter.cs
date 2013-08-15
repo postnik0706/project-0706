@@ -44,9 +44,9 @@ namespace app_4
         {
             foreach (PropertyInfo item in shipment.GetType().GetProperties())
 	        {
-                item.SetValue(shipment, item.  null);
+                /*item.SetValue(shipment, item.  null);
                 FillInProperty<item.GetType()>
-                item.Name
+                item.Name */
 	        } 
         }
 
@@ -66,13 +66,13 @@ namespace app_4
                 {
                     SqlCeUpdatableRecord r = rs.CreateRecord();
 
-                    r.SetInt32(1, shipment.SourceId);
+                    /*r.SetInt32(1, shipment.SourceId);
                     r.SetInt32(2, shipment.CompanyId);
                     r.SetInt32(3, shipment.NumberOfPackages);
                     r.SetBoolean(4, shipment.RateRuleApplied);
                     if (shipment.ShipDate.HasValue)
                         r.SetDateTime(5, shipment.ShipDate.Value);
-                    r.SetString(6, shipment.Workstation);
+                    r.SetString(6, shipment.Workstation); */
 
                     
                     rs.Insert(r, DbInsertOptions.PositionOnInsertedRow);
@@ -80,7 +80,7 @@ namespace app_4
                 }
             }
 
-            foreach (var level2 in shipment.levels)                                         // Payload
+            /*foreach (var level2 in shipment.levels)                                         // Payload
             {
                 // Level2
                 using (SqlCeCommand cmd = new SqlCeCommand(level2.GetType().Name, conn))
@@ -142,7 +142,7 @@ namespace app_4
                         }
                     }
                 }
-            }
+            } */
             
             return idBag[shipment.GetType().Name];
         }

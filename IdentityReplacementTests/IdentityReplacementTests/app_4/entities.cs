@@ -76,6 +76,32 @@ namespace app_4
         }
     }
 
+    public class Shipment
+    {
+        public int ShipmentId { get; set; }
+        public decimal Weight { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class ShipmentContext : DbContext
+    {
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            this.Configuration.AutoDetectChangesEnabled = false;
+            this.Configuration.LazyLoadingEnabled = false;
+            this.Configuration.ProxyCreationEnabled = false;
+            this.Configuration.ValidateOnSaveEnabled = false;
+
+            modelBuilder.Entity<Shipment>()
+                .Property(t => t.ShipmentId)
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+        }
+
+        public DbSet<Shipment> Shipments { get; set; }
+    }
+    
     public class Levels : DbContext
     {
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
